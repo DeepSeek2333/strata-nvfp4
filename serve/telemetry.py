@@ -853,7 +853,8 @@ class Telemetry:
                   f"{self.static['psutil_install']}", file=sys.stderr, flush=True)
         self._disk_prev = None
         self._stop = threading.Event()
-        threading.Thread(target=self._loop, daemon=True).start()
+        self._thread = threading.Thread(target=self._loop, daemon=True)
+        self._thread.start()
 
     def set_engine_cards(self, indices):
         """The cards the gpu_* totals are of (the ones the engine uses).  Unknown or unreadable ones are left out; with
@@ -991,13 +992,28 @@ class Telemetry:
         self._stop.set()
 
     def _loop(self):
+        """One sample a second, for as long as the server lives.
+
+        A failing sample must not end the thread: on a machine where the GPU/psutil source is not readable
+        (a CI runner, a container without NVML) the first exception used to kill the sampler outright, so
+        `GET /metrics` silently stopped updating and `test_responses.NoLeakedSampler` saw "the server did
+        not start its hardware sampler" - the thread had started and died between two readings.
+        """
+        complained = False
         while not self._stop.is_set():
             if self.on_tick:
                 try:
                     self.on_tick()
                 except Exception:  # noqa: BLE001 - the GPU layout is extra information, never a reason to stop
                     pass
-            s = self.sample()
+            try:
+                s = self.sample()
+            except Exception as e:                    # noqa: BLE001 - a monitor must outlive its source
+                if not complained:                    # once, not once a second
+                    print(f"[strata] metrics: a sample failed ({e}); the sampler keeps trying", flush=True)
+                    complained = True
+                self._stop.wait(1.0)
+                continue
             with self.lock:
                 self.now = s
                 for k in ("gpu_util", "gpu_mem_used", "gpu_temp", "gpu_power", "gpu_pcie_rx_mb", "cpu", "ram_used",

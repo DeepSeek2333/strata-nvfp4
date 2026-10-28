@@ -32,7 +32,10 @@ class Home:
             "STRATA_INSTALL_DIR": str(base / "install"),
             "STRATA_RUNTIME_DIR": str(base / "runtime"),
             "XDG_STATE_HOME": str(base / "state"),
+            "XDG_CONFIG_HOME": str(base / "config"),
             "LOCALAPPDATA": str(base / "local"),
+            "APPDATA": str(base / "roaming"),      # discovery.own_settings_file reads %APPDATA%\Strata\settings.json: without this a
+                                                   # PC that runs Strata for real decides the data folder for every one of these tests
             "HOME": str(base / "home"),
             "USERPROFILE": str(base / "home"),
         }

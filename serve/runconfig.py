@@ -14,6 +14,9 @@ import os
 import shutil
 from pathlib import Path
 
+from strata_control import user_args
+from strata_control import atomic as _atomic_mod
+
 # (key, kind, help).  kind: "bool", "int>=0", "num>=0", ("enum", values), "names", or ("sampling", check) for a key
 # of the "sampling" block, ("arg", flag) for an engine option kept in "args" (a whole number; ("arg", flag, "text"): a
 # string, ("arg", flag, "flag"): an option without a value, on or absent; "context" and "rope": --max-context and
@@ -37,6 +40,8 @@ EDITABLE = [
      "Where a non-default reasoning effort goes: start (the default) or end (keeps the cache when it changes)"),
     ("aliases", "names", "Other model names the server lists and answers to (comma-separated)"),
     ("idle_unload_s", "num>=0", "Unload the model after this many seconds without requests (0 or empty: never)"),
+    ("mtp", "bool", "Draft layer (MTP): off starts the engine without it (about 1 GB less graphics memory, slower words per second); "
+                    "empty or on: as installed"),
     ("lazy_load", "bool", "Start without loading the model; the first request loads it (text only)"),
     ("engine_silence_s", "num>=0", "End a request when the engine says nothing for this long (default 300 s, 0 = wait)"),
     ("api_monitor", "bool", "Keep the last 100 requests' prompts and answers in memory for /api-monitor"),
@@ -313,7 +318,24 @@ def apply(cfg: dict, changes: dict) -> tuple[dict, list[str]]:
             a = [x for x in (new.get("args") or []) if x != kind[1]]
             new["args"] = a + [kind[1]] if v else a
         elif isinstance(kind, tuple) and kind[0] == "arg":
-            new["args"] = _put(list(new.get("args") or []), kind[1], v)
+            a = list(new.get("args") or [])
+            flag = kind[1]
+            if flag in a[:-1]:
+                i = a.index(flag)
+                if v is None:
+                    del a[i:i + 2]
+                else:
+                    a[i + 1] = str(v)
+            elif v is not None:
+                a += [flag, str(v)]
+            new["args"] = a
+            mine = user_args.set_flag(user_args.capture(new), flag, v)   # a value set here is the person's: it survives setup and the app
+            if mine:
+                new[user_args.USER_KEY] = mine
+            else:
+                new.pop(user_args.USER_KEY, None)
+            if user_args.WRITTEN_KEY in new:
+                new[user_args.WRITTEN_KEY] = list(a)
             if key == "rope_scaling":                  # a method picked here is the user's; empty: the rule's
                 new.pop("rope_auto", None)
         elif v is None:
@@ -400,7 +422,7 @@ def save(path: str | Path, cfg: dict) -> Path:
     shutil.copyfile(path, bak)
     tmp = path.with_name(path.name + ".tmp")
     tmp.write_text(json.dumps(cfg, indent=1), encoding="utf-8")
-    os.replace(tmp, path)
+    _atomic_mod.replace(tmp, path)
     return bak
 
 

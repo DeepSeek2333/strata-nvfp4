@@ -300,7 +300,9 @@ class WhatARefusalDoesToTheCaller(unittest.TestCase):
         # and the asset the fork publishes (the Windows engine): on Linux PREBUILT_ASSET names one it does not, and
         # get_prebuilt says so before it downloads anything to refuse
         for p in (mock.patch.object(setup, "ROOT", Path(self.tmp.name)),
+                  mock.patch.object(setup, "engine_dir", lambda toolkit=13: Path(self.tmp.name) / "engine"),
                   mock.patch.object(setup.urllib.request, "urlopen", lambda req, timeout=None: io.BytesIO()),
+                  mock.patch.object(setup, "_urlopen", lambda req, timeout=None: mock.MagicMock()),
                   mock.patch.object(setup, "PREBUILT_ASSET", setup.FORK_ASSETS[0])):
             p.start()
             self.addCleanup(p.stop)

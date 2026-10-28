@@ -136,10 +136,13 @@ def start(svc, here: str, bound_port: int, *, version: str | None = None, update
     url = f"http://127.0.0.1:{port}"
 
     def announce():
+        # the host is this computer's own server: an opener that ignores HTTP_PROXY / the registry proxy, the way
+        # strata_control.loopback does it (that module is not imported here: app_ui stays standard-library only)
+        opener = urllib.request.build_opener(urllib.request.ProxyHandler({}))
         deadline = time.time() + 60
         while time.time() < deadline and proc.poll() is None:
             try:
-                with urllib.request.urlopen(url + "/api/health", timeout=2) as r:
+                with opener.open(url + "/api/health", timeout=2) as r:
                     if r.status == 200:
                         break
             except OSError:

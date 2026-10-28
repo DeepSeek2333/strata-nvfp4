@@ -69,9 +69,11 @@ class PythonBooleans(unittest.TestCase):
             with self.subTest(spelling=spelling):
                 self.check({"active": spelling}, {"active": value})
 
-    def test_an_undeclared_tool_decodes_them_too(self):
+    def test_a_tool_without_a_schema_decodes_them_too(self):
+        # no schemas at all: the call is emitted (the Responses route's rule; with tools declared, #3075 leaves an
+        # undeclared name as text), and its parameters decode without a schema, `True` a boolean among them
         text = "<tool_call>\n<function=other>\n<parameter=flag>\nTrue\n</parameter>\n</function>\n</tool_call>"
-        p = OutputParser(thinking=False, tools=[TOOL], stream_tools=True)
+        p = OutputParser(thinking=False, tools=None, stream_tools=True)
         evs = p.feed(text) + p.finish("stop")
         self.assertEqual([e.call.arguments for e in evs if e.kind == "tool_call"], [{"flag": True}])
         self.assertEqual(json.loads("".join(e.text for e in evs if e.kind == "tool_args")), {"flag": True})

@@ -10,6 +10,7 @@
 #include <cstdint>
 #include <deque>
 #include <functional>
+#include <memory>
 #include <utility>
 #include <vector>
 
@@ -26,6 +27,9 @@ struct ConversationCheckpoint {
     std::vector<ConversationImageKey> imgs;
     std::vector<uint8_t> gdn, ple, tails, dead, block_pos;
     uint64_t used = 0; // upstream root-pinned/LRU checkpoint retention
+    // STRATA_CKPT_VRAM_SLOTS: the tag of the device copy of `gdn` (0: none).  Set by conversation_checkpoint_save, the
+    // only writer of a checkpoint's GDN bytes besides a whole copy (which keeps them equal, so it keeps the tag).
+    uint64_t dev_tag = 0;
     // A shared-prefix pin (the request key pin=N): this checkpoint is the read-only prefix many suffix queries branch
     // from, so retention never evicts it (conv_cache.hpp) and a parked conversation holding it stays parked.  A run-time
     // mark only: it is not in the session file, a request that pins the same prefix again sets it.
@@ -59,6 +63,14 @@ struct ConversationKv {
     int format = 0;
     int64_t cells = 0, heads = 0, head_dim = 0, page_size = 0, pooled_rows = 0, idx_dim = 0;
     ConversationBuffer k, v, k_scale, v_scale, pooled;
+    // STRATA_PARK_VRAM_MIB: the tag this layer's parts were recorded under in the park's VRAM slot (0: none).  Set by
+    // conversation_kv_save; a restore that finds the slot copies from it instead of from the buffers above.
+    uint64_t dev_tag = 0;
+    // STRATA_PARK_VRAM_MIB: set while a background copy fills the buffers above from the slot; its deleter waits for
+    // that copy and releases the slot.  This layer's own token (not shared): the layers outlive their image when they
+    // are retained for the next park (ConversationCache::retain), and go in any order.  Last member: it goes before
+    // any buffer.
+    std::shared_ptr<void> pending;
     size_t bytes() const {
         return k.bytes() + v.bytes() + k_scale.bytes() + v_scale.bytes() + pooled.bytes();
     }
@@ -68,11 +80,11 @@ struct ConversationKvReuse {
     std::vector<ConversationKv> kv;
     // Original image extent for validation, and the earliest subsequent rewrite.
     int64_t captured_tokens = 0, unchanged_tokens = 0;
-    // The conversation the image was captured from: a park reuses it only for the prefix it shares with the
-    // conversation then in the main session (a slot may have replaced that session's K/V since).
-    std::vector<int32_t> ids;
     // With a layer split: the later stages' own retained K/V, one per stage, same extents (empty: none)
     std::vector<ConversationKvReuse> stages;
+    // The conversation the image was captured from (the first stage's only): a park reuses it only for the prefix it
+    // shares with the conversation then in the main session (a batch slot may have replaced that session's K/V since).
+    std::vector<int32_t> ids;
     size_t bytes() const {
         size_t n = kv.capacity() * sizeof(ConversationKv) + stages.capacity() * sizeof(ConversationKvReuse) +
                    ids.capacity() * sizeof(int32_t);
@@ -177,6 +189,11 @@ struct SavedConversation {
     // the disk tier's entry holding exactly this image (conversation_disk.hpp: written while the engine was idle), 0 =
     // none.  A run-time mark only, not in the session file: an eviction then drops the RAM copy without a write.
     uint64_t disk_id = 0;
+    // STRATA_PARK_ASYNC: set while a background copy fills this image's K/V; its deleter waits for that copy, and as
+    // one of the last members it runs before any buffer is freed (whichever copy of the image goes last)
+    std::shared_ptr<void> pending;
+    // STRATA_CKPT_ASYNC: the same for the background copy that fills `live.gdn` (the park's running state)
+    std::shared_ptr<void> live_pending;
 
     /// Holds a pinned shared prefix (see ConversationCheckpoint::pinned): the parked-conversation budget keeps it.
     bool pinned() const {
@@ -193,6 +210,24 @@ struct SavedConversation {
         return n;
     }
 };
+
+/// `c` holds the state `ids` (with `images`) describes, or a continuation of it: its tokens start with `ids` and
+/// its pictures below ids.size() are exactly `images`.  What an idle batch slot holds is then parked already (or
+/// a longer continuation is), so the slot need not park it again before an admission overwrites it.
+template<class Token>
+bool conversation_covers(const ConversationCheckpoint& c, const std::vector<Token>& ids,
+                         const std::vector<ConversationImageKey>& images) {
+    const size_t n = ids.size();
+    if (n == 0 || c.ids.size() < n) return false;
+    for (size_t i = 0; i < n; ++i)
+        if ((int64_t) c.ids[i] != (int64_t) ids[i]) return false;
+    size_t j = 0;
+    for (const auto& image : c.imgs) {
+        if (image.start >= (int64_t) n) continue;
+        if (j == images.size() || !(images[j++] == image)) return false;
+    }
+    return j == images.size();
+}
 
 template<class Token>
 int64_t conversation_prefix(const ConversationCheckpoint& c, const std::vector<Token>& prompt,
@@ -243,7 +278,7 @@ public:
     void retain(std::vector<ConversationKv>&& kv, int64_t tokens,
                 std::vector<std::vector<ConversationKv>>&& stage_kv = {}, std::vector<int32_t> ids = {}) {
         reuse_ = {};
-        ConversationKvReuse candidate{std::move(kv), tokens, tokens, std::move(ids), {}};
+        ConversationKvReuse candidate{std::move(kv), tokens, tokens, {}, std::move(ids)};
         for (auto& k : stage_kv) candidate.stages.push_back(ConversationKvReuse{std::move(k), tokens, tokens, {}, {}});
         if (enabled() && candidate.bytes() <= budget_ - bytes_) reuse_ = std::move(candidate);
     }
@@ -254,8 +289,8 @@ public:
     }
     ConversationKvReuse take_reuse() { return std::exchange(reuse_, {}); }
     // The retained K/V for parking `live`: limited to the prefix `live` shares with the conversation it was captured
-    // from, and nothing when they share none.  Without this a park after a slot gave its conversation back to the main
-    // session wrote the RESTORED conversation's K/V into the new one's image (2026-10-08 cross-conversation leak).
+    // from, and nothing when they share none.  Without this a park after a batch slot gave its conversation back to the
+    // main session wrote the RESTORED conversation's K/V into the new one's image (#1503, a cross-conversation leak).
     template<class Token>
     ConversationKvReuse take_reuse_for(const std::vector<Token>& live) {
         ConversationKvReuse r = std::exchange(reuse_, {});
@@ -290,6 +325,19 @@ public:
             for (const auto& c : e.checkpoints) consider(c, false);
         }
         return best;
+    }
+
+    /// A parked conversation holds this state already (its live tokens or one of its checkpoints start with `ids`,
+    /// same pictures, same steering): see conversation_covers.  Read-only; no LRU effect.
+    template<class Token>
+    bool holds(const std::vector<Token>& ids, const std::vector<ConversationImageKey>& images, bool cvec) const {
+        for (const auto& e : entries_) {
+            if (e.cvec != cvec) continue;
+            if (conversation_covers(e.live, ids, images)) return true;
+            for (const auto& c : e.checkpoints)
+                if (conversation_covers(c, ids, images)) return true;
+        }
+        return false;
     }
 
     SavedConversation take(size_t index) {

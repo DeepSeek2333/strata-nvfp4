@@ -325,7 +325,7 @@ class PickSlot(unittest.TestCase):
         self.assertEqual(v[1], {"slot": 1, "state": "idle", "held_tokens": 2})
 
 
-class ParallelService(unittest.TestCase):
+class FakeEngineCase(unittest.TestCase):
     """The real StrataEngine and Service over HTTP, the fake engine behind them."""
 
     def start(self, slots, fit=None, slot_cache=False, fail=False, reuse=False, says_groups=0,
@@ -395,6 +395,26 @@ class ParallelService(unittest.TestCase):
         tb.start()
         ta.join(30); tb.join(30)
         return out
+
+    def race(self, first, second, delay=0.15, max_tokens=64):
+        """`first` sent, `second` after `delay` seconds; -> {text: (reply, seconds it took)}"""
+        res = {}
+
+        def go(t):
+            t0 = time.time()
+            r = self.chat(t, max_tokens=max_tokens)
+            res[t] = (r["choices"][0]["message"]["content"], time.time() - t0)
+        a = threading.Thread(target=go, args=(first,))
+        a.start()
+        time.sleep(delay)
+        go(second)
+        a.join(30)
+        return res
+
+
+class ParallelService(FakeEngineCase):
+    """The real StrataEngine and Service over HTTP, the fake engine behind them: slots, queues, benchmarks, telemetry.
+    The yielding, restart and failure tests are in serve/test_parallel_yield.py (this file alone ran past 100 s)."""
 
     def test_bgen_refused_by_the_engine_is_retried_not_a_400(self):
         """#1994: the engine refuses a BGEN ("no such free slot") although the server saw the slot free: the request
@@ -1075,7 +1095,7 @@ class ParallelService(unittest.TestCase):
         prompt = self.svc.history[[h["output_tokens"] for h in self.svc.history].index(
             max(h["output_tokens"] for h in self.svc.history))]["prompt_total"]
         self.assertGreaterEqual(u["input_tokens"], 1, u)
-        self.assertEqual(u["input_tokens"] + u["cache_read_input_tokens"], prompt, u)
+        self.assertEqual(u["input_tokens"] + u["cache_creation_input_tokens"] + u["cache_read_input_tokens"], prompt, u)
         self.assertEqual(u["cache_read_input_tokens"], 3, u)    # the first read's reuse, not the continuation's
 
     def test_a_slot_request_ended_by_its_stop_token_reports_the_slot_leg(self):

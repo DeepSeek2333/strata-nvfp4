@@ -43,7 +43,8 @@ private:
 
 /// Plan v0.3 P6: `token_embd.weight` in its GGUF form (the IQ model files), in mapped pinned host memory: a row
 /// is read over PCIe per token, so the table costs no VRAM.  `embed_row`, the verify window and the MTP drafter
-/// use it instead of the canonical table when it is set (`set_native_embed`).
+/// use it instead of the canonical table when it is set (`set_native_embed`).  `STRATA_EMBED_VRAM=1` places the
+/// same bytes in VRAM instead (slow PCIe links); the gathers read `dev_` either way.
 class NativeEmbed {
 public:
     NativeEmbed() = default;
@@ -60,6 +61,8 @@ public:
     /// This fork (#7): the device whose VRAM holds the table when it could not be mapped from host memory, else -1
     /// (mapped: every device reads it).
     int vram_device() const { return vram_dev_; }
+    /// The table was placed in VRAM (STRATA_EMBED_VRAM=1, or the pinned / alias fallbacks) rather than mapped.
+    bool in_vram() const { return dev_ != nullptr && host_ == nullptr; }
 
 private:
     void* host_ = nullptr;

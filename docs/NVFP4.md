@@ -23,10 +23,11 @@ dequantized up weights (~1e-8). Any future fold must be checked against FP16's r
 
 `STRATA_PREFILL_NVFP4` picks how the batched prompt path multiplies the experts:
 
-| mode | kernel | activations | one product vs FP64 (`mmq_nvfp4_parity`) |
-|---|---|---|---|
+| Mode | Kernel | Activations | One product against FP64 (`mmq_nvfp4_parity`) |
+| --- | --- | --- | --- |
 | `w4a8` (default) | llama.cpp MMQ, int8 tensor cores | q8_1, float block scales | 0.53% |
 | `w4a4` | llama.cpp MMQ, Blackwell FP4 MMA (sm_120a only) | NVFP4 | 8.6% |
+| `w4a4x2` | Blackwell FP4 MMA | NVFP4 | not in this table; first-token KL in [History](#history--older-measurements) |
 | `fp16` | dequantize + cuBLAS FP16 GEMM | FP16 | reference |
 
 `src/prefill/mmq_nvfp4_w4a8.cu` compiles mmq.cuh's int8 NVFP4 path with Blackwell's FP4 MMA hidden from both the
@@ -38,8 +39,8 @@ a card without that unit's image falls back to `w4a8` with a note.
 First-token KL divergence against `fp16`, 8 prompts (code and prose, 1K-8K tokens); the noise floor is the
 same `fp16` path cut into 4096-token chunks instead of 8192 (another summation order, same arithmetic):
 
-| mode | KL mean | KL median | KL max | top-1 agreement | prefill, 4-8K prompts |
-|---|---|---|---|---|---|
+| Mode | KL mean | KL median | KL max | Top-1 agreement | Prefill, 4-8K prompts |
+| --- | --- | --- | --- | --- | --- |
 | noise floor | 0.00023 | 0.00003 | 0.0016 | 8/8 | - |
 | `w4a8` | 0.0018 | 0.0010 | 0.0096 | 8/8 | 2,503 tok/s |
 | `w4a4` | 0.0080 | 0.0027 | 0.040 | 7/8 | 2,904 tok/s |
@@ -124,6 +125,9 @@ First-token KL on the 8 prompts above plus one of 32K tokens; the first token ru
   (~1,270 slots) and read ~7.1 GB of dense weights per round instead of ~3.8 - an estimated -15-20% decode. Router, SSM gates, indexer, PLE and shared-expert gates are already BF16 with
   FP32 activations; the GDN state, indexer keys and norms are FP32.
 
+On RTX 20 to 40 cards the NVFP4 prompt products are 1.35 to 1.6x slower than IQ3_S / IQ4_NL ones at 32K, because
+NVFP4's 16-value scales are applied in FP32 after every int8 step, which only Blackwell's FP4 tensor cores avoid.
+
 ## CPU experts
 
 `src/kernels/cpu/nvfp4_avx512.cpp` computes the CPU pool's NVFP4 rows in 512-bit lanes: each 64-value
@@ -132,8 +136,11 @@ onto the activation). Same arithmetic as ggml-cpu's `ggml_vec_dot_nvfp4_q8_0`, o
 are ordered differently (worst 4.5e-7 relative, `nvfp4_avx512_parity`). `STRATA_NO_NVFP4_512=1` falls
 back to ggml-cpu.
 
-| tokens | ggml-cpu | AVX-512 | speedup |
-|---|---|---|---|
+> **Measured on:** one expert's gate+up (1280 rows of 2560, cache-resident), AVX-512 CPU, Strata version not recorded.
+> The pool itself is bound by DRAM.
+
+| Tokens | ggml-cpu | AVX-512 | Speedup |
+| --- | --- | --- | --- |
 | 1 | 0.102 ms | 0.058 ms | 1.76x |
 | 4 | 0.410 ms | 0.125 ms | 3.29x |
 | 7 | 0.719 ms | 0.196 ms | 3.66x |

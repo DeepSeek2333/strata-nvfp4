@@ -9,8 +9,9 @@ a declared call nested inside a "tools" wrapper as the call, and text-ifies what
 completes and the agent loop goes on.
 
 From ANBAL534's fork (9453382a, branch tool-call-name-repair).  Here it is opt-in - the config's
-"tool_name_repair": true, OutputParser(repair_names=True) - because the suffix rule guesses; off, every undeclared
-name goes out as the call it always did (OptIn below).
+"tool_name_repair": true, OutputParser(repair_names=True) - because the suffix rule guesses; off, upstream's #3075
+rule stands (this port is on 0.2.7): with tools declared, a call for an undeclared name stays text, never the call
+the router rejects (OptIn below).
 
     python -m unittest serve.test_undeclared_tool_name -v
 """
@@ -124,8 +125,11 @@ class UnmappableNames(unittest.TestCase):
                     want = [("capture", {"content": "42"})] if "capture" in tail else []
                     self.assertEqual(calls(evs), want)
 
-    def test_repair_off_keeps_the_old_behaviour(self):
-        self.assertEqual(calls(events(THINKED + WRAP_OPEN, repair=False)), [("tools", {"content": 42})])
+    def test_repair_off_leaves_the_undeclared_block_as_text(self):
+        # #3075 (upstream 0.2.2, this port's default): with tools declared, a call for an undeclared name stays text
+        evs = events(THINKED + WRAP_OPEN, repair=False)
+        self.assertEqual(calls(evs), [])
+        self.assertIn("<function=tools>", "".join(e.text for e in evs if e.kind == "content"))
 
     def test_a_call_cut_off_by_max_tokens_stays_reasoning_text(self):
         p = OutputParser(thinking=True, tools=SCHEMA, stream_tools=True, repair_names=True)
@@ -207,7 +211,8 @@ class OptIn(unittest.TestCase):
                         evs += p.feed(text[i:i + 3])
                     evs += p.finish("stop")
                     self.assertEqual(calls(evs), calls(events(text, repair=False, stream_tools=st)))
-                    self.assertTrue(calls(evs) and calls(evs)[0][0] in ("tools", "Capture"))
+                    self.assertEqual(calls(evs), [])      # #3075: an undeclared name stays text, not a call
+                    self.assertIn("<function=", "".join(e.text for e in evs if e.kind == "content"))
 
     def test_the_config_switch_reaches_the_parser(self):
         import contextlib
@@ -215,7 +220,7 @@ class OptIn(unittest.TestCase):
         import threading
         from serve.frontend import ChatTemplate
         from serve.server import ROOT, ByteTokenizer, MockEngine, Service
-        for on, want in ((False, ["tools"]), (True, ["capture"])):
+        for on, want in ((False, []), (True, ["capture"])):
             with self.subTest(on=on):
                 tok = ByteTokenizer()
                 svc = Service(MockEngine(tok, THINKED + WRAP_OPEN, max_context=4096), tok,

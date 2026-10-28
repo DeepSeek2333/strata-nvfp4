@@ -28,7 +28,9 @@ time.sleep(120)
 
 
 def running(pid: int) -> bool:
-    out = subprocess.run(["tasklist", "/FI", f"PID eq {pid}", "/NH"], capture_output=True, text=True).stdout
+    # tasklist's own text is in the machine's codepage (GBK on a Chinese Windows, and UTF-8 mode would not decode it);
+    # the pid is ASCII, so decoding what decodes is enough to tell whether the process is listed
+    out = subprocess.run(["tasklist", "/FI", f"PID eq {pid}", "/NH"], capture_output=True).stdout.decode(errors="ignore")
     return str(pid) in out
 
 

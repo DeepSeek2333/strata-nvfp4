@@ -2,7 +2,7 @@
 
 **Qwen3.8-Flash-Next (125B hybrid MoE) with NVFP4 experts on one RTX 20, 30, 40 or 50 card (12 GB of VRAM or more)
 and 64 GB of RAM or more, text and pictures.** A fork of [Niko1221/Strata](https://github.com/Niko1221/Strata), on
-upstream 0.2.0-beta (its engine, server and setup; not its app or installers). Setup installs, ready-made from Hugging Face, the original Qwen in NVFP4 (our GPTQ, or NVIDIA's
+upstream 0.2.7 (its engine, server and setup; not its app or installers). Setup installs, ready-made from Hugging Face, the original Qwen in NVFP4 (our GPTQ, or NVIDIA's
 checkpoint converted), censored as Qwen ships it; on ours an opt-in switch turns the censorship off. Upstream's GGUF
 models are still offered.
 

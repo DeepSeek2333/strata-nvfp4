@@ -21,7 +21,7 @@ from types import SimpleNamespace
 from unittest import mock
 
 from strata_cli import fork_update, update_cmd
-from strata_control import fork_release
+from strata_control import feed as feedmod, fork_release, updater
 
 WINDOWS = os.name == "nt"
 LATEST = {"tag": "v0.2.0-beta-nvfp4.2", "version": "0.2.0-beta-nvfp4.2",
@@ -134,8 +134,12 @@ class ForkUpdate(unittest.TestCase):
             self.assertNotIn("fork path", err)
             with mock.patch.dict(os.environ, {"STRATA_UPDATE_FEED": str(feed)}):
                 self.assertNotIn(self.cli("update", "--check")[0], (0, 2))
-            write(self.components / ".updates" / "state.json", json.dumps({"feed": {"source": str(feed)}}))
-            self.assertNotIn(self.cli("update", "--check")[0], (0, 2))
+            # upstream's feed memory (0.2.x) carries over only an https feed: a folder a test used once is forgotten, so a
+            # later check does not chase a dead address.  The remembered feed is tried upstream's way; the stand-in says it
+            # is not there (exit 5), which is still not this fork's path.
+            write(self.components / ".updates" / "state.json", json.dumps({"feed": {"source": "https://feed.example/strata-feed.json"}}))
+            with mock.patch.object(updater, "check", side_effect=feedmod.FeedError("no feed here")):
+                self.assertNotIn(self.cli("update", "--check")[0], (0, 2))
             code, _, err = self.cli("components", "rollback")          # rollback is upstream's, feed or not
             self.assertNotIn("fork path", err)
         ours = [c for c, _ in self.runner.calls if "UPDATE.bat" in c or "./update.sh" in c]

@@ -54,6 +54,19 @@ class Update(unittest.TestCase):
         call.assert_not_called()
         self.assertIn("Strata is updated", out)
 
+    def test_an_engine_that_stayed_old_is_not_called_updated(self):                  # #3653
+        with tempfile.TemporaryDirectory() as d:
+            p = self.config(Path(d))
+            with mock.patch.object(setup, "engine_version", return_value=(0, 1, 44, 1)):
+                rc, pip, eng, dv, start, call, out = self.run_update([p])
+            self.assertIn("the engine was NOT", out)
+            self.assertIn("Next step:", out)
+            self.assertNotIn("[ok] Strata is updated", out)
+            new = tuple(setup.MIN_ENGINE)          # this Strata's own engine: always "new enough" for itself
+            with mock.patch.object(setup, "engine_version", return_value=new):
+                rc, pip, eng, dv, start, call, out = self.run_update([p])
+            self.assertIn(f"Strata is updated (engine {setup.version_text(new)})", out)
+
     def test_build_keeps_the_compiled_engine_path(self):
         with tempfile.TemporaryDirectory() as d:
             p = self.config(Path(d))

@@ -250,7 +250,7 @@ class Texts(unittest.TestCase):
             out = io.StringIO()
             with mock.patch.object(setup, "pip_install", lambda *a, **k: None), \
                     mock.patch.object(setup, "update_installed_engine", lambda *a, **k: None), \
-                    mock.patch.object(setup, "requirement_lines", lambda: []), redirect_stdout(out):
+                    mock.patch.object(setup, "requirement_lines", lambda *a: []), redirect_stdout(out):
                 setup.update_install([cfg], mock.Mock(build=False, prebuilt=setup.PREBUILT_URL))
         self.assertIn(f"Strata is updated (engine {FORK['version']})", out.getvalue())
 

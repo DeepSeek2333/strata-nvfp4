@@ -4181,10 +4181,11 @@ int Verifier::drop_solo_graphs() {
     // --pipeline-windows prepares its graphs once (capture_all) and never captures them again: those stay
     if (ev_done_ != nullptr || cudaStreamSynchronize(cs_) != cudaSuccess) return 0;
     int n = 0;
-    for (int t = 0; t < 9; ++t) {
-        if (exec_[t]) { cudaGraphExecDestroy(exec_[t]); exec_[t] = nullptr; ++n; }
-        if (exec_nr_[t]) { cudaGraphExecDestroy(exec_nr_[t]); exec_nr_[t] = nullptr; ++n; }
-    }
+    for (int v = 0; v < 2; ++v)          // strata-nvfp4: upstream 0.2.7 made these [2][9] (the sel_long_ variant); both are freed
+        for (int t = 0; t < 9; ++t) {
+            if (exec_[v][t]) { cudaGraphExecDestroy(exec_[v][t]); exec_[v][t] = nullptr; ++n; }
+            if (exec_nr_[v][t]) { cudaGraphExecDestroy(exec_nr_[v][t]); exec_nr_[v][t] = nullptr; ++n; }
+        }
     if (commit_exec_) { cudaGraphExecDestroy(commit_exec_); commit_exec_ = nullptr; ++n; }
     return n;
 }

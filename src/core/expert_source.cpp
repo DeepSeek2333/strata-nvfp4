@@ -3881,6 +3881,7 @@ bool FileExpertSource::pin_cache_complement(
                         std::fprintf(stderr, "FileExpertSource: WARNING: madvise(MADV_NOHUGEPAGE) on the complement "
                                              "failed (errno %d)\n", errno);
                 }
+#endif
             } else if (sliced) {   // page-aligned: the slices are registered on page boundaries, none sharing a page
                 const uint64_t page = 4096, span = (bytes + page - 1) / page * page;
 #if defined(_WIN32)

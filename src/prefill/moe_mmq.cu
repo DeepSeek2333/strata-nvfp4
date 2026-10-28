@@ -893,16 +893,8 @@ void swiglu(const float* gu, float* h, int64_t rows, int64_t n_ff, bool interlea
     ck(cudaGetLastError(), "swiglu");
 }
 
-bool swiglu_quant_ok(int t) {
-#if !defined(__HIPCC__) && defined(STRATA_EXPERIMENTAL_SM60)
-    // the q8_1 D4 rows quantize() writes for a down product's H (K 640)
-    return supported(t) && !fp4_activations(t) && mmq_get_q8_1_ds_layout((ggml_type) t) == MMQ_Q8_1_DS_LAYOUT_D4;
-#else
-    (void) t;
-    return false;   // HIP: not checked against the HIP build's quantizer; outside the SM60 build: not built
-#endif
-}
-
+// strata-nvfp4: upstream's SM60-only swiglu_quant_ok is replaced by the fork's NVFP4-aware one above (its fused
+// swiglu_quant kernel is built in every CUDA build); the 5-arg swiglu_quant below stays SM60-only as upstream has it.
 void swiglu_quant(const float* gu, void* hq, int64_t rows, bool interleaved, void* stream) {
 #if !defined(__HIPCC__) && defined(STRATA_EXPERIMENTAL_SM60)
     if (rows <= 0) return;

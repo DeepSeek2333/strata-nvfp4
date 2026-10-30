@@ -2,7 +2,7 @@
 
 **Qwen3.8-Flash-Next (125B hybrid MoE) with NVFP4 experts on one RTX 20, 30, 40 or 50 card (12 GB of VRAM or more)
 and 64 GB of RAM or more, text and pictures.** A fork of [Niko1221/Strata](https://github.com/Niko1221/Strata), on
-upstream 0.2.7 (its engine, server and setup; not its app or installers). Setup installs, ready-made from Hugging Face, the original Qwen in NVFP4 (our GPTQ, or NVIDIA's
+upstream 0.2.8 (its engine, server and setup; not its app or installers). Setup installs, ready-made from Hugging Face, the original Qwen in NVFP4 (our GPTQ, or NVIDIA's
 checkpoint converted), censored as Qwen ships it; on ours an opt-in switch turns the censorship off. Upstream's GGUF
 models are still offered.
 
@@ -61,6 +61,11 @@ files by hand.
 
 ## What's new
 
+- **0.2.8-nvfp4.4: upstream 0.2.8 (engine 0.1.54).** The fork now sits on upstream 0.2.8: its engine, server and setup
+  merged in, every NVFP4 model, switch and kernel carried over, and the whole test suite green on the port. This
+  release ships the source (the attached zip; branch `strata-nvfp4.4`); the engine builds from it with `setup.py --build`
+  (or `release/make_windows_bundle.py` for the portable sm_75/86/89/120 Windows bundle). Between 0.2.0-beta-nvfp4.3 and
+  this one, 0.2.7-nvfp4.4 brought the fork onto upstream 0.2.7 the same way.
 - **0.2.0-beta-nvfp4.3: upstream 0.2.0's new interface, in your browser.** The release folder's `start-server.cmd` now also
   starts upstream Strata's app page on **http://127.0.0.1:8791** once the model is ready, and opens it: chat with
   pictures and the thinking switch, chats kept by the browser, skills, workspaces and the Monitor with the engine's own

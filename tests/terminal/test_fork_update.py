@@ -56,7 +56,10 @@ class ForkUpdate(unittest.TestCase):
         self.root = Path(d.name) / "strata-nvfp4"
         self.components = Path(d.name) / "components"
         for p in (mock.patch.dict(os.environ, {"STRATA_COMPONENTS_DIR": str(self.components)}),
-                  mock.patch.object(fork_update, "ROOT", self.root)):
+                  mock.patch.object(fork_update, "ROOT", self.root),
+                  # 0.2.8: an update/rollback against a serving engine asks a terminal user; a test harness is no terminal,
+                  # so the script path answers (no prompt, no EOF)
+                  mock.patch("sys.stdin.isatty", return_value=False)):
             p.start()
             self.addCleanup(p.stop)
         for name in ("STRATA_UPDATE_FEED", "STRATA_NO_ACQUIRE", "STRATA_UPDATE_TRUSTED_KEYS"):

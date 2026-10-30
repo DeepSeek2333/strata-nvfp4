@@ -226,6 +226,7 @@ class OptIn(unittest.TestCase):
                 svc = Service(MockEngine(tok, THINKED + WRAP_OPEN, max_context=4096), tok,
                               ChatTemplate(ROOT / "serve/chat_template.jinja"))
                 self.assertFalse(svc.tool_name_repair)
+                svc.tool_call_recovery = False       # 0.2.8: recovery is default-on now; this test is about the fork's tool_name_repair switch
                 svc.tool_name_repair = on
                 with contextlib.redirect_stdout(io.StringIO()):
                     evs = [x for kind, x in svc.run(tok.encode("hi"), True, SCHEMA, 3000, {}, threading.Event())

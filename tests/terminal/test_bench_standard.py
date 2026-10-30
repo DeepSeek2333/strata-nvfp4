@@ -46,6 +46,11 @@ class MockStrata:
         self.lock = threading.Lock()
         self.requests_before = 0
         self.gpu_name = "Mock GPU 12 GB"
+        # Windows' monotonic clock can tick at 15.6 ms (GetTickCount64); a concurrency round of
+        # instant mock responses then finishes inside one tick, wall_s rounds to 0.0 and the
+        # aggregate goes null. Holding each concurrent response past a tick keeps the measurement
+        # honest on such machines.
+        self.concurrency_hold_s = 0.02
         owner = self
 
         class Handler(BaseHTTPRequestHandler):
@@ -96,6 +101,8 @@ class MockStrata:
             def respond(self, rid, body):
                 spec = owner.specs[rid]
                 plan = owner.script.get(rid, {})
+                if rid.startswith("concurrency-"):
+                    time.sleep(owner.concurrency_hold_s)
                 if plan.get("hold_for_arrivals"):
                     deadline = time.monotonic() + 3
                     while time.monotonic() < deadline and owner.active < plan["hold_for_arrivals"]:

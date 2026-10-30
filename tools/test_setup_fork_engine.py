@@ -118,7 +118,10 @@ class Keep(Case):
         self.engine()
         self.published = False
         out = self.starts(3)
-        self.assertEqual(len(self.heads), 2, self.heads)              # the release's tag, then the latest: once
+        # strata-nvfp4: the tag it tries is release_version()'s own (the checkout's release/make_windows_bundle.py
+        # VERSION, else its CMakeLists version, else "0"); this temp folder names no version, so there is no tag to
+        # name and only the latest is asked - and asked once, not on every start.
+        self.assertEqual(len(self.heads), 1, self.heads)
         self.assertEqual(self.downloads, [])
         self.assertEqual(len(self.kept_lines(out)), 1, out)
         self.assertIn("setup tries the release again in a day", out)
@@ -127,7 +130,7 @@ class Keep(Case):
         later = setup.time.time() + 86400 + 60
         with mock.patch.object(setup.time, "time", lambda: later):
             self.starts(1)
-        self.assertEqual(len(self.heads), 4)                           # a day later: asked again
+        self.assertEqual(len(self.heads), 2)                           # a day later: asked again (the one latest URL again)
 
     def test_the_cuda_12_engine_asks_nobody(self):
         # the fork publishes no CUDA 12 engine: known without GitHub, said once, --build named

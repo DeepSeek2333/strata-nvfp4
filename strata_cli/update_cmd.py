@@ -34,6 +34,12 @@ ENV_FEED = "STRATA_UPDATE_FEED"
 ENV_APP_VERSION = "STRATA_APP_VERSION"
 
 
+def default_feed() -> str:
+    """DEFAULT_FEED for this machine: a Linux ARM64 machine (the DGX Spark) reads strata-feed-linux-aarch64.json from the same release."""
+    from strata_control import feed as feedmod
+    return DEFAULT_FEED.rsplit("/", 1)[0] + "/" + feedmod.feed_name()
+
+
 def _common(p: argparse.ArgumentParser) -> None:
     p.add_argument("--feed", default=None, help=f"where the signed update feed is (URL or folder). Default: ${ENV_FEED}, the feed used last, or the project's")
     p.add_argument("--components-dir", default=None, help="the component folder (default: the per-user one, or STRATA_COMPONENTS_DIR)")
@@ -107,7 +113,7 @@ def _feed_source(a, root: Path) -> str | None:
     remembered = (updater.State(root).data.get("feed") or {}).get("source")
     if remembered and _may_be_remembered(remembered) and remembered != DEFAULT_FEED:
         return remembered
-    return None
+    return None      # strata-nvfp4: no feed named is this fork's own updater, never upstream's feed (even its default_feed())
 
 
 def _may_be_remembered(source) -> bool:

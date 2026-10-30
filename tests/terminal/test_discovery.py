@@ -119,7 +119,11 @@ class GuiLayout(unittest.TestCase):
 
     def test_list_and_the_wizard_agree_on_the_install(self):
         cat = self.catalog()
-        self.assertEqual(cat.root.resolve(), models.resolve_install()[0].resolve())
+        # The agreement the screens must share is on the app install.  A source checkout that carries its own run
+        # config (an in-tree engine build leaves one) legitimately wins "here" for the wizard, while this fixture
+        # roots the models side at the fake Terminal, so comparing the two first places would compare two different
+        # "here"s; the app place is the folder both are meant to agree on.
+        self.assertEqual([p for p in cat.places if p.source == "app"][0].path.resolve(), models.resolve_install()[0].resolve())
         self.assertIsNotNone(cat.installed_config("gyro-gyro-s"))
         row = next(r for r in cat.rows() if (r.family, r.model) == ("gyro", "Gyro-S"))
         self.assertTrue(row.installed)

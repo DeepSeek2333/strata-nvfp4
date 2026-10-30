@@ -22,7 +22,8 @@ class RecipeTests(unittest.TestCase):
         self.addCleanup(self.temp.cleanup)
         self.root = Path(self.temp.name)
         environment = mock.patch.dict(os.environ, {"STRATA_PROFILE_DIR": str(self.root / "profiles"),
-                                                "XDG_CONFIG_HOME": str(self.root / "settings")})
+                                                "XDG_CONFIG_HOME": str(self.root / "settings"),
+                                                "STRATA_RUNTIME_DIR": str(self.root / "runtime")})
         environment.start()
         self.addCleanup(environment.stop)
         engine = self.root / "engine"

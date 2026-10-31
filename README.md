@@ -2,7 +2,7 @@
 
 **Qwen3.8-Flash-Next (125B hybrid MoE) with NVFP4 experts on one RTX 20, 30, 40 or 50 card (12 GB of VRAM or more)
 and 64 GB of RAM or more, text and pictures.** A fork of [Niko1221/Strata](https://github.com/Niko1221/Strata), on
-upstream 0.2.8 (its engine, server and setup; not its app or installers). Setup installs, ready-made from Hugging Face, the original Qwen in NVFP4 (our GPTQ, or NVIDIA's
+upstream 0.2.9 (its engine, server and setup; not its app or installers). Setup installs, ready-made from Hugging Face, the original Qwen in NVFP4 (our GPTQ, or NVIDIA's
 checkpoint converted), censored as Qwen ships it; on ours an opt-in switch turns the censorship off. Upstream's GGUF
 models are still offered.
 
@@ -61,6 +61,16 @@ files by hand.
 
 ## What's new
 
+- **0.2.9-nvfp4.4: upstream 0.2.9 (engine 0.1.55).** The fork now sits on upstream 0.2.9: its engine, server and setup
+  merged in, every NVFP4 model, switch and kernel carried over, and the test suites green on the port apart from this
+  machine's environmental family. What 0.2.9 brings that the fork keeps: the Gated DeltaNet prompt kernels on the tensor
+  cores behind a new probe dispatch (the fork's `gdn_rec_kh3` key-head kernel is the first tier of that dispatch on
+  Windows NVIDIA cards), the shared expert arena for replicas next to the fork's shared conversation pool,
+  `with_history_tools` for a tool the conversation already used (#4663), the DeepSeek four- and six-shard GGUF layouts,
+  Unsloth's 1-bit DeepSeek sets where setup offers them, the non-UTF-8 child-process fix in setup (#4675), and an engine
+  built for every usable NVIDIA card in the PC rather than the one setup picked (#4662). This release ships the source
+  (the attached zip; branch `strata-nvfp4.4`); the engine builds from it with `setup.py --build` (or
+  `release/make_windows_bundle.py` for the portable sm_75/86/89/120 Windows bundle).
 - **0.2.8-nvfp4.4: upstream 0.2.8 (engine 0.1.54).** The fork now sits on upstream 0.2.8: its engine, server and setup
   merged in, every NVFP4 model, switch and kernel carried over, and the whole test suite green on the port. This
   release ships the source (the attached zip; branch `strata-nvfp4.4`); the engine builds from it with `setup.py --build`

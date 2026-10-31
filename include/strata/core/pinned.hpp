@@ -132,6 +132,9 @@ struct PinnedArena {
     std::string stage_note;                  ///< per device: "CUDAd layers a-b: pinned X of Y GiB (n of m slices)..."
     void* mapping_base = nullptr;     ///< actual mapping start; differs from base when a shared-file header exists
     uint64_t mapping_bytes = 0;       ///< bytes to release from mapping_base
+    /// shared-file arena only: the load state word in the file's header (0: nobody has loaded it, a pid: that engine is
+    /// loading it, ~0: it is complete).  Shared by every engine that maps the file; null for a private arena.
+    std::atomic<uint64_t>* shared_state = nullptr;
     ~PinnedArena();
     PinnedArena(const PinnedArena&) = delete;
     PinnedArena& operator=(const PinnedArena&) = delete;

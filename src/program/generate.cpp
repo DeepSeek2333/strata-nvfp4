@@ -3775,15 +3775,13 @@ int main(int argc, char** argv) {
         else if (a == "--no-low-ram") o.low_ram = 0;
         else if (a == "--ram-budget") {
             const double gib = std::atof(next("--ram-budget"));
-            if (!(gib > 0.0)) { std::fprintf(stderr, "strata generate: --ram-budget needs GIB > 0
-"); return 2; }
+            if (!(gib > 0.0)) { std::fprintf(stderr, "strata generate: --ram-budget needs GIB > 0\n"); return 2; }
             o.resident_budget = (uint64_t) (gib * 1073741824.0);
             o.low_ram = 1;
         }
         else if (a == "--ram-keep-gib") {
             const double gib = std::atof(next("--ram-keep-gib"));
-            if (!(gib >= 0.0)) { std::fprintf(stderr, "strata generate: --ram-keep-gib needs N >= 0
-"); return 2; }
+            if (!(gib >= 0.0)) { std::fprintf(stderr, "strata generate: --ram-keep-gib needs N >= 0\n"); return 2; }
             o.ram_keep = strata::core::ram_keep_from_gib(gib);
             ram_keep_by_flag = true;
         }
@@ -7487,8 +7485,7 @@ int main(int argc, char** argv) {
                                  "sits in CUDA%d's VRAM, but the draft head runs on CUDA%d, the layer split's last card, "
                                  "which cannot read it.  The driver page-locks too little host memory for this split (WSL2: "
                                  "about 1 GiB; issue #7): run the engine natively (Windows or Linux) or on one GPU - a "
-                                 "smaller --prefill does not help
-", (double) native_embed.bytes() / 1048576.0,
+                                 "smaller --prefill does not help\n", (double) native_embed.bytes() / 1048576.0,
                          native_embed.vram_device(), last_st->dev);
             return 1;
         }

@@ -2,7 +2,7 @@
 
 **Qwen3.8-Flash-Next (125B hybrid MoE) with NVFP4 experts on one RTX 20, 30, 40 or 50 card (12 GB of VRAM or more)
 and 64 GB of RAM or more, text and pictures.** A fork of [Niko1221/Strata](https://github.com/Niko1221/Strata), on
-upstream 0.2.9 (its engine, server and setup; not its app or installers). Setup installs, ready-made from Hugging Face, the original Qwen in NVFP4 (our GPTQ, or NVIDIA's
+upstream 0.2.10 (its engine, server and setup; not its app or installers). Setup installs, ready-made from Hugging Face, the original Qwen in NVFP4 (our GPTQ, or NVIDIA's
 checkpoint converted), censored as Qwen ships it; on ours an opt-in switch turns the censorship off. Upstream's GGUF
 models are still offered.
 
@@ -61,6 +61,22 @@ files by hand.
 
 ## What's new
 
+- **0.2.10-nvfp4.4: upstream 0.2.10 (engine 0.1.56).** The fork now sits on upstream 0.2.10: its
+  engine, server and setup merged in, every NVFP4 model, switch and kernel carried over, and the
+  test suites green on the port apart from this machine's environmental family - the Textual console
+  screens fail the same way here on upstream's own 0.2.10. What 0.2.10 brings that the fork keeps:
+  DFlash2 as the default drafter for Qwen3.8 (about 0.7 GB instead of the 5.2 GB MTP layer; upstream
+  measured 4 to 12% faster decode on the cards it tested, Intel Arc a little slower), the context
+  that no longer shrinks when a start is short of graphics memory (the KV window steps down, then
+  the drafter, then the prompt buffers, and the output head goes to pinned host memory only as the
+  last step - on a 12 GB card at 128K that is what keeps the run alive), the all-cards split engine
+  (Linux only, so a Windows PC keeps the layer split), and the ISTA-DAS Coder with the Mac DeepSeek
+  picture tower. **The fork's three NVFP4 packs stay on the MTP layer with Auto**, which is
+  upstream's own rule: DFlash2 is measured on the Qwen3.8 GGUF families only, and NVFP4 is not on
+  that list. Ask for it by hand with `--draft dflash2` (or the app's Drafting choice) to try it on
+  an NVFP4 pack; the engine has it for sm_86. This release ships the source (the attached zip;
+  branch `strata-nvfp4.4`); the engine builds from it with `setup.py --build` (or
+  `release/make_windows_bundle.py` for the portable sm_75/86/89/120 Windows bundle).
 - **0.2.9-nvfp4.4: upstream 0.2.9 (engine 0.1.55).** The fork now sits on upstream 0.2.9: its engine, server and setup
   merged in, every NVFP4 model, switch and kernel carried over, and the test suites green on the port apart from this
   machine's environmental family. What 0.2.9 brings that the fork keeps: the Gated DeltaNet prompt kernels on the tensor

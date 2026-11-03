@@ -230,7 +230,11 @@ class ModelStep(Base):
             self.assertIn("51 GB", line)                              # the app's figure: experts 50.3 + 1 GB, RAM + VRAM together
             self.assertIn("(recommended)", line)
             self.assertIn("› ", line)                                 # the cursor starts on the recommendation
-            self.assertIn("too big (can still try)", t)          # strata-nvfp4: Q8_0 (188 GB, 136 GB of RAM); upstream's NVFP4 row is not in this fork's list
+            # strata-nvfp4: upstream's NVFP4 row is not in this fork's list; Q8_0 (188 GB) is its biggest.  0.2.10
+            # re-tuned the fit figures (needs 129 GB, not 136), so on 64 GB it is a spill row, not a "too big" one.
+            q8 = next(l for l in t.splitlines() if "(Unsloth) Q8_0" in l)
+            self.assertIn("tight", q8)
+            self.assertIn("SSD ", q8)
             big = next(l for l in t.splitlines() if "UD-Q5_K_XL" in l)
             self.assertIn("SSD ", big)                            # a model bigger than RAM says how much is read from the SSD, as the app does
             self.assertIn("The n-gram table stays on your SSD", t)

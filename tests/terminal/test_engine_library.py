@@ -202,7 +202,9 @@ class Cli(UpdaterCase):
         return code, out.getvalue(), err.getvalue()
 
     def common(self):
-        return ["--components-dir", str(self.components)]
+        # strata-nvfp4: without a named feed `strata components engines/use/remove` runs this fork's own
+        # updater and refuses --components-dir; the feed path is what this test is about, so name one.
+        return ["--components-dir", str(self.components), "--feed", "https://strata.invalid/feed.json"]
 
     def test_engines_use_remove_from_the_terminal(self):
         code, text, _ = self.cli("components", "engines", *self.common())

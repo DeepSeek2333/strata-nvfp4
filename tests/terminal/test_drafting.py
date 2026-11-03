@@ -379,7 +379,9 @@ class UnslothAndTheOtherFlashNextFiles(unittest.TestCase):
                "qwen3.8-flash-next-unsloth-ud-q6_k_xl", "qwen3.8-flash-next-unsloth-q8_0")
     FLASH_NEXT = ("qwen3.8-flash-next", "qwen3.8-flash-next-q2_0", "qwen3.8-flash-next-iq2_xs", "qwen3.8-flash-next-iq3_xxs", "qwen3.8-flash-next-iq3_s",
                   "qwen3.8-flash-next-gyro-gyro-s", "qwen3.8-flash-next-gyro-gyro-m")
-    OTHERS = ("qwen3.8-flash-next-coder-iq1_m", "qwen3.8-flash-next-nvfp4-nvfp4", "qwen3.8-flash-next-nvfp4-nvfp4-nvidia", "qwen3.8-flash-next-nvfp4-nvfp4-qad",
+    # strata-nvfp4: the fork's NVFP4 packs are the gptq / nvidia / mix families, not upstream's one "nvfp4"
+    OTHERS = ("qwen3.8-flash-next-coder-iq1_m", "qwen3.8-flash-next-gptq-nvfp4", "qwen3.8-flash-next-nvidia-nvfp4",
+              "qwen3.8-flash-next-mix-nvfp4",
               "swift-1.5-iq2_xs", "swift-1.5-q4_0", "qwen3.6-35b-a3b-ud-q4_k_xl", "deepseek-v4.1-flash", "qwen3.8-flash-next-unsloth", "qwen3.8-flash-next-unslothx-q8_0")
     HARDWARE = (("cuda", ["sm_120"]), ("hip", ["gfx1151"]), ("metal", None), ("sycl", ["8086"]))
 
@@ -400,7 +402,10 @@ class UnslothAndTheOtherFlashNextFiles(unittest.TestCase):
         mac = (ROOT / "metal" / "setup_mac.py").read_text(encoding="utf-8")
         self.assertIn('"name": "qwen3.8-flash-next-unsloth"', setup)
         self.assertIn('"name": "qwen3.8-flash-next-coder"', setup)
-        self.assertIn('"name": "qwen3.8-flash-next-nvfp4"', setup)
+        # strata-nvfp4: three NVFP4 families of its own, where upstream has one named "nvfp4"
+        for nv in ('"name": "qwen3.8-flash-next-gptq"', '"name": "qwen3.8-flash-next-nvidia"',
+                   '"name": "qwen3.8-flash-next-mix"'):
+            self.assertIn(nv, setup)
         self.assertGreaterEqual(setup.count("\"model_name\": f\"{fam['name']}-{model.lower()}\""), 3)
         self.assertIn("f\"{fam['name']}-{model.lower()}\"", mac)
         for model in ("UD-IQ4_XS", "UD-Q4_K_XL", "UD-Q5_K_XL", "UD-Q6_K_XL", "Q8_0"):
@@ -437,7 +442,7 @@ class UnslothAndTheOtherFlashNextFiles(unittest.TestCase):
 
     def test_swift_coder_and_nvfp4_stay_on_the_mtp(self):
         for backend, archs in self.HARDWARE:
-            for name in ("qwen3.8-flash-next-coder-iq1_m", "qwen3.8-flash-next-nvfp4-nvfp4", "swift-1.5-iq2_xs"):
+            for name in ("qwen3.8-flash-next-coder-iq1_m", "qwen3.8-flash-next-gptq-nvfp4", "swift-1.5-iq2_xs"):
                 for mode in (None, "auto", "dflash2"):
                     with tempfile.TemporaryDirectory() as tmp:
                         cfg, data, mtp = self.run_config(name, tmp, mode)

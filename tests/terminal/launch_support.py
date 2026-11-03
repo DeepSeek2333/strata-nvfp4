@@ -32,18 +32,20 @@ class Home:
             "STRATA_INSTALL_DIR": str(base / "install"),
             "STRATA_RUNTIME_DIR": str(base / "runtime"),
             "XDG_STATE_HOME": str(base / "state"),
-            "XDG_CONFIG_HOME": str(base / "config"),
             "LOCALAPPDATA": str(base / "local"),
-            "APPDATA": str(base / "roaming"),      # discovery.own_settings_file reads %APPDATA%\Strata\settings.json: without this a
-                                                   # PC that runs Strata for real decides the data folder for every one of these tests
+            "APPDATA": str(base / "roaming"),            # Windows: %APPDATA%\Strata\settings.json (remembered Strata folders), profiles, connections
+            "XDG_CONFIG_HOME": str(base / "xdg-config"),  # Linux/macOS: ~/.config/strata/settings.json
             "HOME": str(base / "home"),
             "USERPROFILE": str(base / "home"),
         }
+        self.env_clear = ("STRATA_SETTINGS_FILE", "STRATA_CONNECTION_DIR")   # a developer's own variables must not leak into a test either
         (base / "home").mkdir(parents=True, exist_ok=True)
         self.patch = mock.patch.dict(os.environ, self.env)
 
     def __enter__(self) -> "Home":
         self.patch.start()
+        for k in self.env_clear:                       # (patch.dict puts the original environment back on exit)
+            os.environ.pop(k, None)
         return self
 
     def __exit__(self, *exc) -> None:

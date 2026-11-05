@@ -8096,11 +8096,8 @@ def bench_tips(args, env, ram: float, model_ram_gb: float, vram_gb: float, visio
                     "has run up to 7x slower (#780 #781); a smaller number, or auto, leaves the driver room")
     prefill = arg_after(args, "--prefill")
     if prefill == "auto:32768" and ram < PREFILL_RISK_RAM_GB:
-        tips.append(f"warning: --prefill auto:32768 on {ram:.0f} GB of RAM: it ran ~3x slower than --prefill auto with "
-                    "32 GB (#834 #669); it paid off (+21-35%) with 96 GB")
-    elif prefill == "auto" and ram >= PREFILL_BIG_RAM_GB and not bare_auto_is_32768(gpu, args, env):   # already the default there (round 0212)
-        tips.append(f"tip: with {ram:.0f} GB of RAM, --prefill auto:32768 in the config's args read prompts 21-35% "
-                    "faster in community benchmarks (#433 #440 #834); not set, nothing changes")
+        tips.append(f"warning: --prefill auto:32768 on {ram:.0f} GB of RAM: with 32 GB, 32768-token chunks read prompts "
+                    "~3x slower than 8192-token ones (#834 #669); --prefill auto:8192 keeps them at 8192")
     resident = any(a in args for a in ("--resident-experts", "--resident-budget-gib"))
     if resident and ram <= HEADROOM_RAM_GB and "STRATA_RESIDENT_HEADROOM_GIB" not in (env or {}):
         tips.append(f"tip: on a PC with {ram:.0f} GB of RAM, \"env\": {{\"STRATA_RESIDENT_HEADROOM_GIB\": \"6\"}} in the "

@@ -67,7 +67,9 @@ def fork_engine(eng_holder: list):
         eng = setup.engine_dir(toolkit)
         eng.mkdir(exist_ok=True)
         (eng / "BUILD.json").write_text(json.dumps({
-            "version": "0.1.40.3-nvfp4.1", "source": "release", "archs": [75, 86, 89, 120], "ptx": False,
+            # the current release's VERSION: 0.2.11's v3.1 Unsloth files check the engine version (UNSLOTH_V31_ENGINE),
+            # and a mock pinned to an old release would read as too old and stop setup in those tests
+            "version": "0.2.11-nvfp4.4", "source": "release", "archs": [75, 86, 89, 120], "ptx": False,
             "cuda": "13.3", "vision": "cpu", "portable": True, "fork": FORK, "cuda_libs": "bundled"}))
         (eng / setup.EXE).write_bytes(b"")
         (eng / setup.VEXE).write_bytes(b"")

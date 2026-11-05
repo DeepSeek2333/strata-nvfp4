@@ -518,9 +518,10 @@ class IQ4XS(Base):
             self.assertEqual((ch["family"], ch["model"]), ("unsloth", X))
 
     def test_family_default_and_menus(self):
-        """The first menu lists the Unsloth family without [experimental]; its size menu lists the six files,
-        UD-IQ4_XS first and this fork's UD-Q3_K_XL second, none marked EXPERIMENTAL (UD-Q4_K_XL the default on 64 GB,
-        Enter); --model names are unchanged."""
+        """The first menu lists the Unsloth family without [experimental]; its size menu lists the five files by size,
+        UD-IQ4_XS first (the v3.1 files follow below, and UD-Q4_K_XL is the default on 64 GB, Enter), none marked
+        EXPERIMENTAL; --model names are unchanged.  (The fork's own UD-Q3_K_XL row is gone: upstream 0.2.11 offers
+        that name itself, as one of its v3.1 files.)"""
         code, out, cfg = self.main(["--context", "8192", "--vision", "no"], version="0.1.38", model=False,
                                    family=False, answers={"Which model": "4"}, m=M)
         self.assertEqual(code, 0, out)
@@ -529,12 +530,12 @@ class IQ4XS(Base):
         self.assertIn("UD-IQ1_M, UD-Q2_0, UD-IQ2_XS, UD-Q2_K_XL, UD-IQ3_XXS, UD-Q3_K_XL, UD-IQ4_XS, UD-IQ4_XS-v31, UD-Q4_K_XL, UD-Q5_K_XL, UD-Q6_K_XL or Q8_0 (68 to 188 GB downloads)", fam_line)
         self.assertNotIn("[experimental]", out)
         size_lines = [ln for ln in out.splitlines()
-                      if any(ln.startswith(f"  {i}) {m} ") for i in range(1, 7) for m in setup.MODELS)]
-        self.assertEqual(len(size_lines), 6, out)
-        for i, (line, m) in enumerate(zip(size_lines, (X, "UD-Q3_K_XL", M, "UD-Q5_K_XL", "UD-Q6_K_XL", "Q8_0")), 1):
+                      if any(ln.startswith(f"  {i}) {m} ") for i in range(1, 6) for m in setup.MODELS)]
+        self.assertEqual(len(size_lines), 5, out)
+        for i, (line, m) in enumerate(zip(size_lines, (X, M, "UD-Q5_K_XL", "UD-Q6_K_XL", "Q8_0")), 1):
             self.assertTrue(line.startswith(f"  {i}) {m} "), line)
             self.assertNotIn("EXPERIMENTAL", line)
-        self.assertTrue(any("Which size" in q and "[3]" in q for q in self.asked), self.asked)
+        self.assertTrue(any("Which size" in q and "[2]" in q for q in self.asked), self.asked)
         self.assertEqual(cfg["model_name"], "qwen3.8-flash-next-unsloth-ud-q4_k_xl")
         code, out, cfg = self.main(["--context", "8192"], version="0.1.38", model=False, m=M)   # --yes: same default
         self.assertEqual(code, 0, out)

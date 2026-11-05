@@ -1,5 +1,6 @@
 """Upstream 0.1.44.1's "setup run again keeps the installed size" (tools/test_setup_rerun_size.py) with this fork's
-families: Unsloth's sizes incl. this fork's UD-Q3_K_XL, an NVFP4 / Q8_0 / mix install beside a GGUF one, and the
+families: Unsloth's sizes incl. UD-Q3_K_XL (upstream's own v3.1 file since 0.2.11, the fork's 3-shard entry retired),
+an NVFP4 / Q8_0 / mix install beside a GGUF one, and the
 Qwen3.6 own-path family (its size menu and the family default of a re-run).  A Qwen3.6 size bigger than the RAM
 stays a note, never a question (bdd615c9).  Mocked as the tests it borrows from - nothing is fetched or started.
 

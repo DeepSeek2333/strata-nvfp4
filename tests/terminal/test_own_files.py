@@ -345,10 +345,6 @@ class Table(unittest.TestCase):
         setup = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(setup)
         table = json.loads((models.ROOT / "data" / "gguf_fingerprints.json").read_text(encoding="utf-8"))
-        # strata-nvfp4: this fork's own Unsloth size (setup.py's UD-Q3_K_XL, three pinned shards) has no fingerprint row:
-        # a row must come from the real GGUF headers (models.py matches tensors, bytes and expert types), and the 90 GB of
-        # files are not on any machine that runs this test. Adding the row is a follow-up, not something to guess at.
-        fork_sizes_without_a_fingerprint_row = {"unsloth/UD-Q3_K_XL"}
         missing = []
         for family, fam in setup.FAMILIES.items():
             if fam.get("ready"):
@@ -358,8 +354,6 @@ class Table(unittest.TestCase):
                     continue
                 names = {setup.model_file(fam, model, i) for i in range(1, setup.model_shards(fam, model) + 1)}
                 key = f"{family}/{model}"
-                if key in fork_sizes_without_a_fingerprint_row:
-                    continue
                 have = {Path(n).name for n in (table.get(key) or {}).get("files", [])}
                 if key not in models.SUPPORTED_SELECTIONS or have != names:
                     missing.append(key)

@@ -7,12 +7,14 @@ import { App } from './app/App';
 import { installDropGuard } from './components/DropZone';
 import { installFork } from './lib/fork';   // strata-nvfp4
 import './styles/fork.css';   // strata-nvfp4
+import { startRecovery } from './lib/recovery';
 
 const el = document.getElementById('root');
 if (!el) throw new Error('#root missing');
 
 installDropGuard();
 installFork();   // strata-nvfp4: hides what an attached interface cannot do
+startRecovery();
 
 createRoot(el).render(
   <StrictMode>

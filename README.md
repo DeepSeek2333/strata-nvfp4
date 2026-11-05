@@ -2,7 +2,7 @@
 
 **Qwen3.8-Flash-Next (125B hybrid MoE) with NVFP4 experts on one RTX 20, 30, 40 or 50 card (12 GB of VRAM or more)
 and 64 GB of RAM or more, text and pictures.** A fork of [Niko1221/Strata](https://github.com/Niko1221/Strata), on
-upstream 0.2.10 (its engine, server and setup; not its app or installers). Setup installs, ready-made from Hugging Face, the original Qwen in NVFP4 (our GPTQ, or NVIDIA's
+upstream 0.2.11 (its engine, server and setup; not its app or installers). Setup installs, ready-made from Hugging Face, the original Qwen in NVFP4 (our GPTQ, or NVIDIA's
 checkpoint converted), censored as Qwen ships it; on ours an opt-in switch turns the censorship off. Upstream's GGUF
 models are still offered.
 
@@ -61,6 +61,26 @@ files by hand.
 
 ## What's new
 
+- **0.2.11-nvfp4.4: upstream 0.2.11 (engine 0.1.57).** The fork now sits on upstream 0.2.11: its
+  engine, server and setup merged in, every NVFP4 model, switch and kernel carried over, and the
+  test suites green on the port apart from this machine's environmental family. What 0.2.11 brings
+  that the fork keeps: Unsloth's re-uploaded Qwen3.8-Flash-Next sets ("Dynamic v3.1") - setup offers
+  seven new files (UD-IQ1_M, UD-Q2_0, UD-IQ2_XS, UD-Q2_K_XL, UD-IQ3_XXS, UD-Q3_K_XL, UD-IQ4_XS-v31)
+  and the new Q5_0 expert format, which the engine computes more exactly than llama.cpp's formula
+  does; the fork's own 3-shard UD-Q3_K_XL is retired in favour of upstream's v3.1 file of that name,
+  and the size menu is upstream's own; chats are files in Strata's data folder now, not browser
+  storage (saved byte for byte, no 5 MB limit, two windows see each other's changes); a running
+  agent turn is taken over after a page reload; the mixed-up reply between model copies is fixed
+  (#2892, a privacy bug - exactly the replica path where this fork's shared conversation pool
+  runs); the context no longer shrinks on small multi-card starts and the split engine's Auto
+  prices free memory; on Windows a plan asks far fewer background questions (27 child processes
+  became 10 on the owner PC, the plan took 7.2 s); and Pillow 13.0.0 for the JPEG 2000 advisory.
+  Upstream's new NVIDIA prompt default - a bare `--prefill auto` reaching 32768-token chunks on
+  cc >= 8.0 cards - is this fork's engine behaviour already: its plain auto has always gone to
+  32768, so setup keeps its own wording for the `auto:32768` warning on small-RAM PCs. This release
+  ships the source (the attached zip; branch `strata-nvfp4.4`); the engine builds from it with
+  `setup.py --build` (or `release/make_windows_bundle.py` for the portable sm_75/86/89/120 Windows
+  bundle).
 - **0.2.10-nvfp4.4: upstream 0.2.10 (engine 0.1.56).** The fork now sits on upstream 0.2.10: its
   engine, server and setup merged in, every NVFP4 model, switch and kernel carried over, and the
   test suites green on the port apart from this machine's environmental family - the Textual console

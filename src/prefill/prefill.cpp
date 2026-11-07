@@ -355,6 +355,8 @@ inline bool cpu_share_on() { return cpu_share_env() != 0.0; }
 inline bool cpu_share_nvfp4() {
     const auto& lay = kernels::cpu::expert_layout();
     return lay.native && !lay.fmt.empty() && lay.fmt[0].gu_type == kernels::cpu::kNvfp4Type;
+}
+
 // STRATA_PF_PEER_CPU=1 (opt-in): the share also runs beside a peer GPU (--peer-device), which it otherwise leaves off.  It
 // takes only experts that neither card computes, and its rows go before the peer's block, so the peer's stays the tail
 // its combine reads from (back_at); the staged chunks then go up to cpu_share_max()'s 3072 tokens, not the default

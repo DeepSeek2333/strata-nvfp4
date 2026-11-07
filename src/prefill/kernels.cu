@@ -2542,6 +2542,8 @@ __global__ void __launch_bounds__(256) moe_combine_write_norm_rs_kernel(
             if (xn16_lo) xn16_lo[xo + d] = bf_lo(x, h);
         }
     }
+}
+
 // moe_combine4_kernel with the expert rows as FP16 (fused::dm_f16_used(): the down kernels wrote 2,560 halves a row): the same fmaf order, the rows
 // widened to FP32 first.  Half the bytes of the layer's rows, read once.  (Round 0215, from the Strix dm16 patch.)
 __global__ void moe_combine16_kernel(const uint16_t* __restrict__ Dm, const int32_t* __restrict__ slot,

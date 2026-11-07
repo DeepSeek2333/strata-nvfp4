@@ -61,6 +61,22 @@ files by hand.
 
 ## What's new
 
+- **0.2.12-nvfp4.4: upstream 0.2.12 (engine 0.1.58).** The fork now sits on upstream 0.2.12: its
+  engine, server and setup merged in, every NVFP4 model, switch and kernel carried over, and the
+  test suites green on the port apart from this machine's environmental family. What 0.2.12 brings
+  that the fork keeps: the tuned DFlash2 drafter (0.34 GB) - Auto uses it for UD-IQ4_XS-v31 on
+  12 GB NVIDIA cards and keeps MTP for IQ3_S, which is what this fork's packs run with under Auto;
+  the 12 GB file-tier honesty - the second start-up check no longer counts the engine's own memory
+  as free, so it stops switching to the slower file cache (on the RTX 3060, 0.2.11 switched in 3 of
+  3 starts and 0.2.12 in 0 of 3), and UD-IQ4_XS-v31 prompts read about 3 times faster (2K: 87 to
+  264 tokens per second); tool-call fixes (#5312, #5409, #5276, #5281, #4828, #4832, and #4622's
+  new `undeclared_tool_calls` setting - `text` by default, `call` opt-in); a download with the
+  wrong checksum kept as `<name>.bad` instead of deleted; and engine fixes (a row-table over-read
+  that could fault long CUDA prompts, a window of slots kept in every expert pool so 12, 20 and
+  30 GiB RAM splits start, speed figures in the server reports). The fork's own adaptive-fetch
+  switch is upstream's own now (PR #2964): the fork keeps its default of 2 where upstream keeps 0.
+  This release ships the source (the attached zip; branch `strata-nvfp4.4`); the engine builds from
+  it with `setup.py --build` (or `release/make_windows_bundle.py` for the portable Windows bundle).
 - **0.2.11-nvfp4.4: upstream 0.2.11 (engine 0.1.57).** The fork now sits on upstream 0.2.11: its
   engine, server and setup merged in, every NVFP4 model, switch and kernel carried over, and the
   test suites green on the port apart from this machine's environmental family. What 0.2.11 brings

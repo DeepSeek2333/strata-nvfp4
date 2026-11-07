@@ -5438,6 +5438,7 @@ int main(int argc, char** argv) {
                  (unsigned long long) (pool_bytes >> 20), o.pack.c_str(), load_s(), skip.size());
     mem_mark("the pack weights");
 
+    bool io_pf_by_default = false;   // the Linux file-tier defaults turned io prefetch on (no STRATA_IO_PREFETCH given)
     {   // the card, and whether this build has code for it (a binary built for other GPUs fails at its first kernel
         // otherwise, after the whole expert arena has loaded) - before the arena starts loading
         int dev = 0;
@@ -8074,83 +8075,6 @@ int main(int argc, char** argv) {
     // CUDA error left set by the failed `cudaHostRegister` and read later by `gr_read`'s launch check.  See the
     // note in `pinned.cu`.
     strata::core::FileExpertSource src;
-    bool io_pf_by_default = false;   // the Linux file-tier defaults turned io prefetch on (no STRATA_IO_PREFETCH given)
-    {   // the card, and whether this build has code for it (a binary built for other GPUs fails at its first kernel
-        // otherwise, after the whole expert arena has loaded) - before the arena starts loading
-        int dev = 0;
-        cudaDeviceProp p{};
-        const bool named = cudaGetDevice(&dev) == cudaSuccess && cudaGetDeviceProperties(&p, dev) == cudaSuccess;
-        if (!named) cudaGetLastError();
-        const char* name = named && p.name[0] ? p.name : "(an unnamed GPU)";
-#if defined(STRATA_USE_HIP)
-        std::fprintf(stderr, "strata generate: GPU %d: %s (%s)\n", dev, name, named ? p.gcnArchName : "?");
-        // the first prompt's one-time hipBLAS library loads (about 2.5 s), done on a thread while the expert arena loads
-        if (named) g_warm_thr = std::thread([dev] { strata::prefill::warm_gemm_libraries(dev); });
-        // (RDNA4's matrix-core prompt attention is the default since 148-amd: the engine says so once, at its first prompt;
-        // STRATA_HIP_WMMA=0 turns it off.)
-#if defined(_WIN32)
-        // #468 #461: which HIP runtime was loaded - the bundled one beside the exe, or an AMD driver's System32 copy
-        if (HMODULE h = GetModuleHandleA("amdhip64_7.dll")) {
-            char path[MAX_PATH] = {};
-            if (GetModuleFileNameA(h, path, MAX_PATH) > 0) {
-                std::fprintf(stderr, "strata generate: HIP runtime %s\n", path);
-                // #1261: the bundled runtime sits beside the exe, but Windows bound the import to another copy (the AMD
-                // driver's, in System32, was seen with a different build): kernels of this engine can then fail
-                // (hipErrorInvalidDeviceFunction in the prompt GEMMs).  Said, not changed - the import is bound before main.
-                char exe[MAX_PATH] = {};
-                if (GetModuleFileNameA(nullptr, exe, MAX_PATH) > 0) {
-                    std::string beside(exe);
-                    const size_t cut = beside.find_last_of("\\/");
-                    beside = (cut == std::string::npos ? std::string() : beside.substr(0, cut + 1)) + "amdhip64_7.dll";
-                    if (GetFileAttributesA(beside.c_str()) != INVALID_FILE_ATTRIBUTES &&
-                        _stricmp(beside.c_str(), path) != 0) {
-                        std::fprintf(stderr, "strata generate: WARNING: the HIP runtime in use is not the bundled one beside "
-                                             "the engine (%s): if prompts fail with hipErrorInvalidDeviceFunction, tell the "
-                                             "maintainers with this log (#1261)\n",
-                                     beside.c_str());
-                        // #461: why the bundled one lost.  Its imports (rocm_kpack.dll and the C++ runtime) must be beside the
-                        // exe too; LoadLibraryEx on it with the search limited to its own folder says what is missing (126 =
-                        // a dependency).  A diagnostic only: the copy it loads is released at once and nothing is forced.
-                        SetLastError(0);
-                        HMODULE probe = LoadLibraryExA(beside.c_str(), nullptr,
-                                                       LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR | LOAD_LIBRARY_SEARCH_DEFAULT_DIRS);
-                        const DWORD le = probe != nullptr ? 0 : GetLastError();
-                        if (probe != nullptr) FreeLibrary(probe);
-                        std::fprintf(stderr, "strata generate: the bundled runtime beside the engine %s (GetLastError %lu)%s\n",
-                                     probe != nullptr ? "loads on its own" : "does NOT load", (unsigned long) le,
-                                     le == 126 ? ": a DLL it imports is missing from the engine's folder (rocm_kpack.dll, "
-                                                 "msvcp140.dll, vcruntime140.dll, vcruntime140_1.dll); run START-HERE.bat "
-                                                 "again (0.1.40.3 and later copy them)" : "");
-                    }
-                }
-            }
-        }
-#endif
-#else
-        std::fprintf(stderr, "strata generate: GPU %d: %s, compute capability %d.%d%s\n", dev, name,
-                     strata::cc_major_of(p.major), strata::cc_minor_of(p.minor),
-                     strata::emulated_cc() ? " (STRATA_EMULATE_CC: a test mode, the card is emulated)" : "");
-#if !defined(STRATA_HIP_GFX906) && !defined(STRATA_GPU_METAL)   // a CUDA toolkit mismatch; the gfx906 HIP build has no CUDART_VERSION
-        {   // #542: a build whose libcudart is older than its headers (a CUDA 13 kit with a dangling libcudart.so that
-            // CMake resolved to the system's CUDA 12 one) reads cudaDeviceProp shifted - silently, and slowly
-            int rt = 0;
-            if (cudaRuntimeGetVersion(&rt) == cudaSuccess && rt / 1000 != CUDART_VERSION / 1000)
-                std::fprintf(stderr, "strata generate: WARNING: this engine was compiled with CUDA %d.%d headers but "
-                                     "loaded a CUDA %d.%d runtime (libcudart): GPU properties can read wrong and some "
-                                     "kernels go unused. Rebuild it against one toolkit (cmake -DCUDAToolkit_ROOT=<the "
-                                     "toolkit>, with its libcudart.so present) (#542)\n",
-                             CUDART_VERSION / 1000, CUDART_VERSION % 1000 / 10, rt / 1000, rt % 1000 / 10);
-        }
-#endif
-#endif
-        const std::string e = strata::core::device_code_error();
-        if (!e.empty()) {
-            std::fprintf(stderr, "strata generate: this engine has no code for %s (sm_%d%d): %s - rebuild it for this "
-                                 "card (setup does: START-HERE.bat --setup)\n", name, p.major, p.minor, e.c_str());
-            return 1;
-        }
-    }
-    strata::core::ArenaExpertSource arena_src;
     strata::core::ExpertSource* srcp = nullptr;
     // #4846 (owner 11-01): the arena first, and when the RAM is still short after the wait and the give-back, the --mmap-experts source
     // for this run (o.mmap_experts is set here, before anything below sizes the experts' tier from it; nothing was sized for the arena

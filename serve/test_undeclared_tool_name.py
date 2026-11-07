@@ -108,9 +108,11 @@ class UnmappableNames(unittest.TestCase):
                 self.assertEqual(calls(evs), [])
                 self.assertIn("<function=tools>", "".join(e.text for e in evs if e.kind == "content"))
 
-    def test_a_short_ambiguous_suffix_is_not_guessed(self):
+    def test_a_short_last_segment_finds_its_one_tool_now(self):
+        # #5281 (0.2.12): the parser itself maps a declared MCP tool's last segment when exactly one tool
+        # ends that way, so "js" is the call now; the fork's repair still refuses it (too short to mean a name).
         text = THINKED + "<tool_call>\n<function=js>\n<parameter=code>\nx\n</parameter>\n</function>\n</tool_call>"
-        self.assertEqual(calls(events(text)), [])
+        self.assertEqual(calls(events(text)), [("mcp__node_repl__js", {"code": "x"})])
 
     def test_an_unclosed_unmappable_call_is_the_text_written(self):
         # #1881 ends a call without its </tool_call> at its </function>; as text it gets no closer it never had

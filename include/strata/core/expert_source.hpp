@@ -658,12 +658,11 @@ struct ExpertDispatch {
     /// whose routed ids all look resident there publishes no activation (doorbell_publish_res) - counted
     const int32_t* dres_check = nullptr;
     int64_t stale_x = 0;
-    /// Opt-in (STRATA_ADAPT_FETCH, the fork): the PCIe share admits into the VRAM tier.  Its blobs cross into VRAM
-    /// anyway, so the layer's most-routed misses (`usage`) take the share, and one routed at least `fetch_min` and
-    /// `fetch_margin` more than its layer's least-routed resident expert not routed in the window is copied into that
-    /// one's slot instead of staging - a swap with no RAM read of its own.  `res_mut` is `host_res`, written here (the
-    /// admission sets `res_dirty` / `res_dirty_idx` above, as the tier's evictions do); `in_flight`: experts the
-    /// adaptive tier is copying in.
+    /// Opt-in (STRATA_ADAPT_FETCH): the PCIe share admits into the VRAM tier.  Its blobs cross into VRAM anyway, so the
+    /// layer's most-routed misses (`usage`) take the share, and one routed at least `fetch_min` and `fetch_margin` more
+    /// than its layer's least-routed resident expert not routed in the window is copied into that one's slot instead
+    /// of staging - a swap with no RAM read of its own.  `res_mut` is `host_res`, written here (and listed in
+    /// `res_dirty_idx`); `in_flight`: experts the adaptive tier is copying in.
     int fetch_admit = 0;
     float fetch_min = 1.0f, fetch_margin = 0.5f;
     int32_t* res_mut = nullptr;

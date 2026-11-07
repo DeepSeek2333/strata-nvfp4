@@ -1,6 +1,7 @@
 // src/core/expert_source.cpp - the adapter.  See the header for the three clauses of the contract.
 #include "strata/core/expert_source.hpp"
 #include "strata/core/expert_nibble.hpp"
+#include "strata/core/conversation_memory.hpp"
 #include "strata/core/foresight_swap.hpp"
 #include "strata/core/on_device.hpp"
 #include "strata/core/ple_residency.hpp"
@@ -923,6 +924,16 @@ bool file_tier_unbuffered(const std::vector<std::string>& paths, uint64_t arena_
         why = "the available RAM is unknown";
         return false;
     }
+    // The room the file cache can really have (on by default; STRATA_FILE_TIER_HONEST=0 turns it off; an I/O-path change only).  available_memory_bytes credits the group's whole `file`
+    // counter as reclaimable (cgroup_available_bytes), and on a RAM-budget config that credit includes pages the engine itself holds
+    // (P2003, v31, 22 GiB RAM copy: the room read 18.7 GiB while the group had limit 36 GiB, current 24.8 GiB, i.e. 11 GiB left).  The re-check
+    // after the copy then saw held >= 0.5, skipped the drive probe and switched the file tier to the cache: 2-3x slower prompts.  The
+    // conversation cache's sampler (only the clean inactive file cache is credited) is the honest figure; the smaller of the two decides.
+    // The operator cap (--memory-limit-mib) is NOT applied: it bounds the engine's own allocations, not the page cache (counting it sent IQ3_S
+    // unbuffered and cut its decode 2-3x).
+    if (const char* ho = std::getenv("STRATA_FILE_TIER_HONEST"); ho == nullptr || ho[0] != '0') {
+        if (const auto honest = strata::core::sample_host_memory(strata::core::MemoryProbePaths{}, 0); honest && honest->available < avail) avail = honest->available;
+    }
     // #1194: the experts read from the files are a skewed set: a cache holding a twentieth of them (at least 1.5 GiB)
     // serves most of the repeats, and beat the unbuffered reads at every room measured (it reads 2 to 7 times less from
     // the drive).  `avail` already has what this process and the cgroup hold taken off, so 1 GiB is left for the rest.
@@ -1159,6 +1170,7 @@ void FileExpertSource::warm_scored(int64_t layer, const int64_t* experts, const 
 
 void FileExpertSource::set_io_prefetch(bool on, int threads) {
     io_stop();
+    gate_on_ = false;   // the decode gate comes and goes with io prefetch
 #if defined(__linux__)
     if (!on) return;
     if (base_ == nullptr || paths_.empty() || !direct_.empty()) return;   // unbuffered readers batch their own reads
@@ -4898,7 +4910,7 @@ bool FileExpertSource::pcie_layer(int64_t layer) const {
 
 bool ExpertDispatch::fetch_can(int64_t layer) const {
     return fetch_admit > 0 && res_mut != nullptr && !usage.empty() && plan != nullptr && plan->pcie_mode == 2 &&
-           plan->dst2 != nullptr && peer == nullptr && remote_count == 0 && pcie_num > 0 &&
+           plan->dst2 != nullptr && peer == nullptr && remote_count == 0 && fs == nullptr && pcie_num > 0 &&
            src != nullptr && src->pcie_layer(layer);
 }
 
@@ -5148,6 +5160,21 @@ void expert_pool_dispatch_multi(ExpertDispatch& d, const float* x_f, const int32
                 ++d.tail_experts;
             }
         }
+        // STRATA_ROUTE_DUMP=<file> (bench only, off by default): one text line per layer-window, "layer n_tok nd nmiss | e:rows:res ..." in routing
+        // order (res 1 = resident in the GPU cache, 0 = a miss the CPU computes unless the PCIe share takes it, 2 = tail-skipped), for replaying placement
+        // policies offline on the routing the engine really produced (round 0216 P3.1).
+        static std::FILE* const route_dump = [] { const char* f = std::getenv("STRATA_ROUTE_DUMP"); return f != nullptr && f[0] != '\0' ? std::fopen(f, "a") : nullptr; }();
+        if (route_dump != nullptr) {
+            std::fprintf(route_dump, "%lld %lld %d %d |", (long long) d.layers, (long long) n_tok, nd, nmiss);
+            for (int q = 0; q < nd; ++q) {
+                const int32_t e = ids[distinct[q]];
+                int rows = 0;
+                for (int64_t i = 0; i < n; ++i) rows += first_of[i] == distinct[q];
+                const int res = skip_d[q] ? 2 : (e >= 0 && e < d.n_expert && d.host_res[(size_t) d.layers * (size_t) d.n_expert + (size_t) e] >= 0) ? 1 : 0;
+                std::fprintf(route_dump, " %d:%d:%d", (int) e, rows, res);
+            }
+            std::fputc(10, route_dump);
+        }
         // STRATA_PCIE_BALANCE (opt-in, #1548): the count comes from the measured CPU and GPU costs instead of the share
         const bool pcie_ok = (d.pcie_num > 0 || d.pcie_model.on) && d.src->pcie_layer(d.layers);
         int m = pcie_ok ? d.pcie_model.pick(nmiss, (nmiss * d.pcie_num) >> 8) : 0;
@@ -5170,7 +5197,7 @@ void expert_pool_dispatch_multi(ExpertDispatch& d, const float* x_f, const int32
             for (int q = 0; q < nd; ++q) {
                 pick[q] = false;
                 const int32_t e = ids[distinct[q]];   // a tail-skipped miss is not fetched
-                // (an unpinned blob cannot be fetched: under upstream's STRATA_PIN_BY_NEED a PCIe layer is pinned in part)
+                // (an unpinned blob cannot be fetched: under STRATA_PIN_BY_NEED a PCIe layer is pinned in part)
                 if (!skip_d[q] && e >= 0 && e < d.n_expert && d.host_res[(size_t) d.layers * (size_t) d.n_expert + (size_t) e] < 0 &&
                     d.src->pinned(d.layers, e))
                     mq[nm++] = q;

@@ -778,6 +778,9 @@ void fetch_blobs(const unsigned long long* src, const int32_t* n, uint8_t* dst, 
     fetch_blobs_kernel<<<48 * 8, 256, 0, (cudaStream_t) stream>>>(src, n, (uint4*) dst, (long long) (blob_bytes / 16), dst2);
     check("fetch_blobs");
 }
+void fetch_blobs(const unsigned long long* src, const int32_t* n, uint8_t* dst, int64_t blob_bytes, int cap, void* stream) {
+    fetch_blobs(src, n, dst, blob_bytes, cap, stream, nullptr);
+}
 
 void res_patch(int32_t* table, const int32_t* pairs, int n, void* stream) {
     if (n <= 0) return;
@@ -790,6 +793,9 @@ void rebase_ptrs(unsigned long long* ptr, const int32_t* n, uint8_t* base, int64
     rebase_ptrs_kernel<<<1, 128, 0, (cudaStream_t) stream>>>(ptr, n, (unsigned long long) base, (long long) blob_bytes,
                                                              dst2);
     check("rebase_ptrs");
+}
+void rebase_ptrs(unsigned long long* ptr, const int32_t* n, uint8_t* base, int64_t blob_bytes, void* stream) {
+    rebase_ptrs(ptr, n, base, blob_bytes, stream, nullptr);
 }
 
 void add_streams_broadcast(const float* h, const float* e, float* R, int64_t n_embd, int hc, int n_tok, void* stream) {

@@ -169,10 +169,11 @@ def run(server, d, pin="auto", name=NAME):
 
 
 def asked(srv):
-    """The pieces (indexes) the server was asked for, one entry per request; the one-byte probe is left out
-    (and on Python before 3.13 also the HEAD's redirect, which urllib replays as a whole-file GET: gh-115415)."""
-    drop = {(0, 0)} if sys.version_info >= (3, 13) else {(0, 0), (0, len(DATA) - 1)}
-    return [s // CHUNK for s, e in srv.gets if (s, e) not in drop]
+    """The pieces (indexes) the server was asked for, one entry per request; the one-byte probe is left out, and so is the
+    plain whole-file GET that Python before 3.13 sends when it follows the HEAD's redirect (urllib turns the redirected HEAD into
+    a GET and the download closes it at once); no piece is that big."""
+    whole = (0, len(srv.data) - 1)
+    return [s // CHUNK for s, e in srv.gets if (s, e) not in ((0, 0), whole)]
 
 
 def files(d):
@@ -500,7 +501,9 @@ class Failures(unittest.TestCase):
             self.d = d
             code, out = run(srv, d)
             self.assertIsNone(code, out)
-            self.assertTrue(seen and seen[0] is not None and seen[0] <= 32 * CHUNK, seen)
+            # a preallocated file would already be the full size (len(DATA)) here; what the other connection has written ahead of piece 30 is
+            # thread timing (Windows put it at 34 and 39 pieces), so the check is only that the file has not been made full size
+            self.assertTrue(seen and seen[0] is not None and seen[0] < len(DATA), seen)
 
 
 class Progress(unittest.TestCase):

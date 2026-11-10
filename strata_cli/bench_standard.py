@@ -288,9 +288,7 @@ def stream_chat(target: Target, spec: dict, model: str | None, *, timeout_s: flo
         raw["interrupted"] = True
         raw["error"] = {"kind": "cancelled", "message": "cancelled by the operator"}
     except (OSError, http.client.HTTPException, ValueError) as exc:
-        # strata-nvfp4: on Windows the connection's own socket timeout can raise TimeoutError a moment before the
-        # watchdog sets the flag - the request still timed out, so it is the same answer either way
-        if raw["timed_out"] or isinstance(exc, TimeoutError):
+        if raw["timed_out"] or isinstance(exc, TimeoutError):   # the socket's own timeout can fire just before the timer does (Windows)
             raw["error"] = {"kind": "timeout", "message": f"no complete answer within {timeout_s:g} seconds"}
         else:
             raw["error"] = {"kind": "connection_" + type(exc).__name__, "message": str(exc)[:200] or type(exc).__name__}

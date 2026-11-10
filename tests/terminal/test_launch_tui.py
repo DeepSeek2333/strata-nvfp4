@@ -227,16 +227,16 @@ class ModelStep(Base):
             self.assertIn("IQ3_XXS", t)
             line = next(l for l in t.splitlines() if "Qwen3.8-Flash-Next IQ3_S" in l)     # 64 GB + 12 GB: the 64 GB tier
             self.assertIn("84 GB", line)                              # setup.py's download_gb 83.6
-            self.assertIn("51 GB", line)                              # the app's figure: experts 50.3 + 1 GB, RAM + VRAM together
+            self.assertIn("55 GB", line)                              # the files without the lookup table: 83.6 GB download - 28.8 GB (the owner's rule)
             self.assertIn("(recommended)", line)
             self.assertIn("› ", line)                                 # the cursor starts on the recommendation
-            # strata-nvfp4: upstream's NVFP4 row is not in this fork's list; Q8_0 (188 GB) is its biggest.  0.2.10
-            # re-tuned the fit figures (needs 129 GB, not 136), so on 64 GB it is a spill row, not a "too big" one.
-            q8 = next(l for l in t.splitlines() if "(Unsloth) Q8_0" in l)
-            self.assertIn("tight", q8)
-            self.assertIn("SSD ", q8)
             big = next(l for l in t.splitlines() if "UD-Q5_K_XL" in l)
-            self.assertIn("SSD ", big)                            # a model bigger than RAM says how much is read from the SSD, as the app does
+            self.assertTrue(big.rstrip().endswith("may run slower"), big)       # 99 GB of weights against 64 GB + 12 GB: a warning, not a block
+            self.assertNotIn("SSD ", big)                          # (no "SSD N GB" suffix any more)
+            nv = next(l for l in t.splitlines() if "(NVFP4) NVFP4 " in l)
+            self.assertTrue(nv.rstrip().endswith("may run slower"), nv)       # 76.8 GB of files (128 - 51.2) against 64 GB + 11.9 GB
+            for old in ("too big", "fits, a bit slower", "does not fit"):
+                self.assertNotIn(old, t)
             self.assertIn("The n-gram table stays on your SSD", t)
         self.run_app(case)
 
@@ -254,7 +254,7 @@ class ModelStep(Base):
                 self.assertIn("fits (recommended)", rec)
                 for model in ("Q2_0", "Q8_0", "UD-Q5_K_XL"):     # strata-nvfp4: no upstream "NVFP4" row in this fork's catalog
                     row = next(l for l in t.splitlines() if model in l and "GB" in l)
-                    self.assertTrue(any(w in row for w in ("fits", "tight", "too big")), row)
+                    self.assertTrue(any(w in row for w in ("fits", "may run slower", "tight")), row)
                 self.assertTrue(all(len(l) <= 80 for l in t.splitlines()))
         asyncio.run(go())
 
@@ -269,10 +269,9 @@ class ModelStep(Base):
         async def case(app, pilot, ctx):
             await press(pilot, "enter", "end", "enter")
             last = ctx.rows[-1]
-            self.assertEqual(last.verdict, "no")                      # the last row does not fit a 12 GB card
+            self.assertIn(last.verdict, ("slower", "tight"))           # the last row (DeepSeek UD-Q8_K_XL) does not fit 64 GB + a 12 GB card: said, not refused
             self.assertEqual((ctx.settings.family, ctx.settings.model), (last.family, last.model))
             self.assertIn("Where should the model files be stored?", text_of(app))
-            self.assertTrue(any("does not fit" in n for n in ctx.notes))
         self.run_app(case)
 
     def test_own_files_are_checked_with_the_fingerprint_table(self):

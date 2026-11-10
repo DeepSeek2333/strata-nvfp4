@@ -1,8 +1,7 @@
 {
- "64GB-1x32GB qwen recommended": {
+ "128GB-1x24GB qwen IQ3_S": {
   "code": 0,
   "config": {
-   "exe": "<T>/engine/<EXE>",
    "args": [
     "--pack",
     "<T>/data/packs/iq3_s",
@@ -30,7 +29,16 @@
     "32768",
     "--vision",
     "--vram-reserve-mib",
-    "700"
+    "700",
+    "--control-vector-scaled",
+    "<REPO>/data/uncensor/qwen-nvfp4-gptq-uncensored.gguf:1.0",
+    "--control-vector-layer-range",
+    "8",
+    "33",
+    "--cvec-mode",
+    "project",
+    "--cvec-dir",
+    "per-layer"
    ],
    "cwd": "<T>",
    "exe": "<T>/engine/<EXE>",
@@ -43,6 +51,7 @@
    "model_name": "qwen3.8-flash-next-iq3_s",
    "port": 8080,
    "tokenizer": "<T>/data/packs/iq3_s/tokenizer",
+   "uncensored": false,
    "vision": {
     "exe": "<T>/engine/<VEXE>",
     "gpu": true,
@@ -69,9 +78,9 @@
     "--prefill",
     "auto",
     "--spec",
-    "4",
+    "6",
     "--spec-min-p",
-    "0.5",
+    "0.7",
     "--mtp",
     "<T>/data/mtp/rt",
     "--max-context",
@@ -82,7 +91,16 @@
     "32768",
     "--vision",
     "--vram-reserve-mib",
-    "700"
+    "700",
+    "--control-vector-scaled",
+    "<REPO>/data/uncensor/qwen-nvfp4-gptq-uncensored.gguf:1.0",
+    "--control-vector-layer-range",
+    "8",
+    "33",
+    "--cvec-mode",
+    "project",
+    "--cvec-dir",
+    "per-layer"
    ],
    "cwd": "<T>",
    "exe": "<T>/engine/<EXE>",
@@ -95,6 +113,7 @@
    "model_name": "qwen3.8-flash-next-iq3_xxs",
    "port": 8080,
    "tokenizer": "<T>/data/packs/iq3_xxs/tokenizer",
+   "uncensored": false,
    "vision": {
     "exe": "<T>/engine/<VEXE>",
     "gpu": true,
@@ -121,9 +140,9 @@
     "--prefill",
     "auto",
     "--spec",
-    "4",
+    "6",
     "--spec-min-p",
-    "0.5",
+    "0.7",
     "--mtp",
     "<T>/data/mtp/rt",
     "--max-context",
@@ -134,7 +153,16 @@
     "32768",
     "--vision",
     "--vram-reserve-mib",
-    "700"
+    "700",
+    "--control-vector-scaled",
+    "<REPO>/data/uncensor/qwen-nvfp4-gptq-uncensored.gguf:1.0",
+    "--control-vector-layer-range",
+    "8",
+    "33",
+    "--cvec-mode",
+    "project",
+    "--cvec-dir",
+    "per-layer"
    ],
    "cwd": "<T>",
    "exe": "<T>/engine/<EXE>",
@@ -147,6 +175,7 @@
    "model_name": "qwen3.8-flash-next-q2_0",
    "port": 8080,
    "tokenizer": "<T>/data/packs/q2_0/tokenizer",
+   "uncensored": false,
    "vision": {
     "exe": "<T>/engine/<VEXE>",
     "gpu": true,
@@ -173,9 +202,9 @@
     "--prefill",
     "auto",
     "--spec",
-    "4",
+    "6",
     "--spec-min-p",
-    "0.5",
+    "0.7",
     "--mtp",
     "<T>/data/mtp/rt",
     "--max-context",
@@ -186,7 +215,16 @@
     "32768",
     "--vision",
     "--vram-reserve-mib",
-    "700"
+    "700",
+    "--control-vector-scaled",
+    "<REPO>/data/uncensor/qwen-nvfp4-gptq-uncensored.gguf:1.0",
+    "--control-vector-layer-range",
+    "8",
+    "33",
+    "--cvec-mode",
+    "project",
+    "--cvec-dir",
+    "per-layer"
    ],
    "cwd": "<T>",
    "exe": "<T>/engine/<EXE>",
@@ -199,6 +237,7 @@
    "model_name": "qwen3.8-flash-next-iq3_s",
    "port": 8080,
    "tokenizer": "<T>/data/packs/iq3_s/tokenizer",
+   "uncensored": false,
    "vision": {
     "exe": "<T>/engine/<VEXE>",
     "gpu": true,
@@ -223,9 +262,9 @@
     "--prefill",
     "auto",
     "--spec",
-    "4",
+    "6",
     "--spec-min-p",
-    "0.5",
+    "0.7",
     "--mtp",
     "<T>/data/mtp/rt",
     "--max-context",
@@ -236,7 +275,16 @@
     "32768",
     "--vision",
     "--vram-reserve-mib",
-    "700"
+    "700",
+    "--control-vector-scaled",
+    "<REPO>/data/uncensor/qwen-nvfp4-gptq-uncensored.gguf:1.0",
+    "--control-vector-layer-range",
+    "8",
+    "33",
+    "--cvec-mode",
+    "project",
+    "--cvec-dir",
+    "per-layer"
    ],
    "cwd": "<T>",
    "env": {
@@ -252,6 +300,7 @@
    "model_name": "qwen3.8-flash-next-unsloth-ud-q4_k_xl",
    "port": 8080,
    "tokenizer": "<T>/data/packs/unsloth-ud-q4_k_xl/tokenizer",
+   "uncensored": false,
    "vision": {
     "exe": "<T>/engine/<VEXE>",
     "gpu": true,
@@ -278,9 +327,9 @@
     "--prefill",
     "auto",
     "--spec",
-    "4",
+    "6",
     "--spec-min-p",
-    "0.5",
+    "0.7",
     "--mtp",
     "<T>/data/mtp/rt",
     "--max-context",
@@ -290,7 +339,16 @@
     "--resident-experts",
     "--vision",
     "--vram-reserve-mib",
-    "700"
+    "700",
+    "--control-vector-scaled",
+    "<REPO>/data/uncensor/qwen-nvfp4-gptq-uncensored.gguf:1.0",
+    "--control-vector-layer-range",
+    "8",
+    "33",
+    "--cvec-mode",
+    "project",
+    "--cvec-dir",
+    "per-layer"
    ],
    "cwd": "<T>",
    "exe": "<T>/engine/<EXE>",
@@ -312,6 +370,7 @@
    "model_name": "qwen3.8-flash-next-iq3_s",
    "port": 8080,
    "tokenizer": "<T>/data/packs/iq3_s/tokenizer",
+   "uncensored": false,
    "vision": {
     "exe": "<T>/engine/<VEXE>",
     "gpu": true,
@@ -338,9 +397,9 @@
     "--prefill",
     "auto",
     "--spec",
-    "4",
+    "6",
     "--spec-min-p",
-    "0.5",
+    "0.7",
     "--mtp",
     "<T>/data/mtp/rt",
     "--max-context",
@@ -350,7 +409,16 @@
     "--resident-experts",
     "--vision",
     "--vram-reserve-mib",
-    "700"
+    "700",
+    "--control-vector-scaled",
+    "<REPO>/data/uncensor/qwen-nvfp4-gptq-uncensored.gguf:1.0",
+    "--control-vector-layer-range",
+    "8",
+    "33",
+    "--cvec-mode",
+    "project",
+    "--cvec-dir",
+    "per-layer"
    ],
    "cwd": "<T>",
    "exe": "<T>/engine/<EXE>",
@@ -372,6 +440,7 @@
    "model_name": "qwen3.8-flash-next-iq3_xxs",
    "port": 8080,
    "tokenizer": "<T>/data/packs/iq3_xxs/tokenizer",
+   "uncensored": false,
    "vision": {
     "exe": "<T>/engine/<VEXE>",
     "gpu": true,
@@ -398,9 +467,9 @@
     "--prefill",
     "auto",
     "--spec",
-    "4",
+    "6",
     "--spec-min-p",
-    "0.5",
+    "0.7",
     "--mtp",
     "<T>/data/mtp/rt",
     "--max-context",
@@ -410,7 +479,16 @@
     "--resident-experts",
     "--vision",
     "--vram-reserve-mib",
-    "700"
+    "700",
+    "--control-vector-scaled",
+    "<REPO>/data/uncensor/qwen-nvfp4-gptq-uncensored.gguf:1.0",
+    "--control-vector-layer-range",
+    "8",
+    "33",
+    "--cvec-mode",
+    "project",
+    "--cvec-dir",
+    "per-layer"
    ],
    "cwd": "<T>",
    "exe": "<T>/engine/<EXE>",
@@ -432,6 +510,7 @@
    "model_name": "qwen3.8-flash-next-q2_0",
    "port": 8080,
    "tokenizer": "<T>/data/packs/q2_0/tokenizer",
+   "uncensored": false,
    "vision": {
     "exe": "<T>/engine/<VEXE>",
     "gpu": true,
@@ -458,9 +537,9 @@
     "--prefill",
     "auto",
     "--spec",
-    "4",
+    "6",
     "--spec-min-p",
-    "0.5",
+    "0.7",
     "--mtp",
     "<T>/data/mtp/rt",
     "--max-context",
@@ -470,7 +549,16 @@
     "--resident-experts",
     "--vision",
     "--vram-reserve-mib",
-    "700"
+    "700",
+    "--control-vector-scaled",
+    "<REPO>/data/uncensor/qwen-nvfp4-gptq-uncensored.gguf:1.0",
+    "--control-vector-layer-range",
+    "8",
+    "33",
+    "--cvec-mode",
+    "project",
+    "--cvec-dir",
+    "per-layer"
    ],
    "cwd": "<T>",
    "exe": "<T>/engine/<EXE>",
@@ -492,6 +580,7 @@
    "model_name": "qwen3.8-flash-next-iq3_xxs",
    "port": 8080,
    "tokenizer": "<T>/data/packs/iq3_xxs/tokenizer",
+   "uncensored": false,
    "vision": {
     "exe": "<T>/engine/<VEXE>",
     "gpu": true,
@@ -516,9 +605,9 @@
     "--prefill",
     "auto",
     "--spec",
-    "4",
+    "6",
     "--spec-min-p",
-    "0.5",
+    "0.7",
     "--mtp",
     "<T>/data/mtp/rt",
     "--max-context",
@@ -526,6 +615,13 @@
     "--kv",
     "int8",
     "--resident-budget-gib",
+    "8",
+    "--vision",
+    "--vram-reserve-mib",
+    "700",
+    "--control-vector-scaled",
+    "<REPO>/data/uncensor/qwen-nvfp4-gptq-uncensored.gguf:1.0",
+    "--control-vector-layer-range",
     "8",
     "33",
     "--cvec-mode",
@@ -548,6 +644,7 @@
    "model_name": "qwen3.8-flash-next-unsloth-ud-q4_k_xl",
    "port": 8080,
    "tokenizer": "<T>/data/packs/unsloth-ud-q4_k_xl/tokenizer",
+   "uncensored": false,
    "vision": {
     "exe": "<T>/engine/<VEXE>",
     "gpu": true,
@@ -574,9 +671,9 @@
     "--prefill",
     "auto",
     "--spec",
-    "4",
+    "6",
     "--spec-min-p",
-    "0.5",
+    "0.7",
     "--mtp",
     "<T>/data/mtp/rt",
     "--max-context",
@@ -584,7 +681,16 @@
     "--kv",
     "int8",
     "--resident-experts",
-    "--vision"
+    "--vision",
+    "--control-vector-scaled",
+    "<REPO>/data/uncensor/qwen-nvfp4-gptq-uncensored.gguf:1.0",
+    "--control-vector-layer-range",
+    "8",
+    "33",
+    "--cvec-mode",
+    "project",
+    "--cvec-dir",
+    "per-layer"
    ],
    "cwd": "<T>",
    "exe": "<T>/engine/<EXE>",
@@ -606,17 +712,11 @@
    "model_name": "qwen3.8-flash-next-iq3_s",
    "port": 8080,
    "tokenizer": "<T>/data/packs/iq3_s/tokenizer",
-   "model_name": "qwen3.8-flash-next-iq3_s",
-   "log": "<T>/strata-iq3_s.log",
-   "lib_dirs": [
-    "<cuda>"
-   ],
-   "port": 8080,
    "uncensored": false,
-   "gpu": 0,
-   "gpus_asked": true,
    "vision": {
     "exe": "<T>/engine/<VEXE>",
+    "gpu": false,
+    "max_tokens": 300,
     "mmproj": "<T>/models/mmproj-Qwen3.8-Flash-Next-BF16.gguf",
     "model": "<T>/models/IQ3_S/Qwen3.8-Flash-Next-GSQ-RCO-IQ3_S-00001-of-00002.gguf",
     "threads": 6
@@ -640,9 +740,9 @@
     "--prefill",
     "auto",
     "--spec",
-    "4",
+    "6",
     "--spec-min-p",
-    "0.5",
+    "0.7",
     "--mtp",
     "<T>/data/mtp/rt",
     "--max-context",
@@ -650,7 +750,16 @@
     "--kv",
     "int8",
     "--resident-experts",
-    "--vision"
+    "--vision",
+    "--control-vector-scaled",
+    "<REPO>/data/uncensor/qwen-nvfp4-gptq-uncensored.gguf:1.0",
+    "--control-vector-layer-range",
+    "8",
+    "33",
+    "--cvec-mode",
+    "project",
+    "--cvec-dir",
+    "per-layer"
    ],
    "cwd": "<T>",
    "exe": "<T>/engine/<EXE>",
@@ -672,6 +781,7 @@
    "model_name": "qwen3.8-flash-next-iq3_xxs",
    "port": 8080,
    "tokenizer": "<T>/data/packs/iq3_xxs/tokenizer",
+   "uncensored": false,
    "vision": {
     "exe": "<T>/engine/<VEXE>",
     "gpu": false,
@@ -699,9 +809,9 @@
     "--prefill",
     "auto",
     "--spec",
-    "4",
+    "6",
     "--spec-min-p",
-    "0.5",
+    "0.7",
     "--mtp",
     "<T>/data/mtp/rt",
     "--max-context",
@@ -710,7 +820,16 @@
     "int8",
     "--kv-resident",
     "32768",
-    "--vision"
+    "--vision",
+    "--control-vector-scaled",
+    "<REPO>/data/uncensor/qwen-nvfp4-gptq-uncensored.gguf:1.0",
+    "--control-vector-layer-range",
+    "8",
+    "33",
+    "--cvec-mode",
+    "project",
+    "--cvec-dir",
+    "per-layer"
    ],
    "cwd": "<T>",
    "exe": "<T>/engine/<EXE>",
@@ -732,6 +851,7 @@
    "model_name": "qwen3.8-flash-next-q2_0",
    "port": 8080,
    "tokenizer": "<T>/data/packs/q2_0/tokenizer",
+   "uncensored": false,
    "vision": {
     "exe": "<T>/engine/<VEXE>",
     "gpu": false,
@@ -759,9 +879,9 @@
     "--prefill",
     "auto",
     "--spec",
-    "4",
+    "6",
     "--spec-min-p",
-    "0.5",
+    "0.7",
     "--mtp",
     "<T>/data/mtp/rt",
     "--max-context",
@@ -769,7 +889,16 @@
     "--kv",
     "int8",
     "--resident-experts",
-    "--vision"
+    "--vision",
+    "--control-vector-scaled",
+    "<REPO>/data/uncensor/qwen-nvfp4-gptq-uncensored.gguf:1.0",
+    "--control-vector-layer-range",
+    "8",
+    "33",
+    "--cvec-mode",
+    "project",
+    "--cvec-dir",
+    "per-layer"
    ],
    "cwd": "<T>",
    "exe": "<T>/engine/<EXE>",
@@ -791,6 +920,7 @@
    "model_name": "qwen3.8-flash-next-iq3_xxs",
    "port": 8080,
    "tokenizer": "<T>/data/packs/iq3_xxs/tokenizer",
+   "uncensored": false,
    "vision": {
     "exe": "<T>/engine/<VEXE>",
     "gpu": false,
@@ -816,9 +946,9 @@
     "--prefill",
     "auto",
     "--spec",
-    "4",
+    "6",
     "--spec-min-p",
-    "0.5",
+    "0.7",
     "--mtp",
     "<T>/data/mtp/rt",
     "--max-context",
@@ -827,7 +957,16 @@
     "int8",
     "--resident-budget-gib",
     "23",
-    "--vision"
+    "--vision",
+    "--control-vector-scaled",
+    "<REPO>/data/uncensor/qwen-nvfp4-gptq-uncensored.gguf:1.0",
+    "--control-vector-layer-range",
+    "8",
+    "33",
+    "--cvec-mode",
+    "project",
+    "--cvec-dir",
+    "per-layer"
    ],
    "cwd": "<T>",
    "exe": "<T>/engine/<EXE>",
@@ -844,6 +983,7 @@
    "model_name": "qwen3.8-flash-next-unsloth-ud-q4_k_xl",
    "port": 8080,
    "tokenizer": "<T>/data/packs/unsloth-ud-q4_k_xl/tokenizer",
+   "uncensored": false,
    "vision": {
     "exe": "<T>/engine/<VEXE>",
     "gpu": false,
@@ -871,9 +1011,9 @@
     "--prefill",
     "auto",
     "--spec",
-    "4",
+    "6",
     "--spec-min-p",
-    "0.5",
+    "0.7",
     "--mtp",
     "<T>/data/mtp/rt",
     "--max-context",
@@ -884,7 +1024,16 @@
     "32768",
     "--vision",
     "--vram-reserve-mib",
-    "700"
+    "700",
+    "--control-vector-scaled",
+    "<REPO>/data/uncensor/qwen-nvfp4-gptq-uncensored.gguf:1.0",
+    "--control-vector-layer-range",
+    "8",
+    "33",
+    "--cvec-mode",
+    "project",
+    "--cvec-dir",
+    "per-layer"
    ],
    "cwd": "<T>",
    "exe": "<T>/engine/<EXE>",
@@ -897,17 +1046,81 @@
    "model_name": "qwen3.8-flash-next-iq3_s",
    "port": 8080,
    "tokenizer": "<T>/data/packs/iq3_s/tokenizer",
+   "uncensored": false,
    "vision": {
     "exe": "<T>/engine/<VEXE>",
     "gpu": true,
-    "max_tokens": 1024
+    "max_tokens": 1024,
+    "mmproj": "<T>/models/mmproj-Qwen3.8-Flash-Next-BF16.gguf",
+    "model": "<T>/models/IQ3_S/Qwen3.8-Flash-Next-GSQ-RCO-IQ3_S-00001-of-00002.gguf"
+   }
+  }
+ },
+ "64GB-1x32GB qwen IQ3_XXS": {
+  "code": 0,
+  "config": {
+   "args": [
+    "--pack",
+    "<T>/data/packs/iq3_xxs",
+    "--native",
+    "<T>/models/IQ3_XXS/Qwen3.8-Flash-Next-GSQ-RCO-IQ3_XXS-00001-of-00002.gguf",
+    "--ple-gguf",
+    "<T>/models/IQ3_XXS/Qwen3.8-Flash-Next-GSQ-RCO-IQ3_XXS-00002-of-00002.gguf",
+    "--expert-profile",
+    "<T>/data/expert-profile.bin",
+    "--expert-cache",
+    "auto",
+    "--prefill",
+    "auto",
+    "--spec",
+    "6",
+    "--spec-min-p",
+    "0.7",
+    "--mtp",
+    "<T>/data/mtp/rt",
+    "--max-context",
+    "131072",
+    "--kv",
+    "int8",
+    "--kv-resident",
+    "32768",
+    "--vision",
+    "--vram-reserve-mib",
+    "700",
+    "--control-vector-scaled",
+    "<REPO>/data/uncensor/qwen-nvfp4-gptq-uncensored.gguf:1.0",
+    "--control-vector-layer-range",
+    "8",
+    "33",
+    "--cvec-mode",
+    "project",
+    "--cvec-dir",
+    "per-layer"
+   ],
+   "cwd": "<T>",
+   "exe": "<T>/engine/<EXE>",
+   "gpu": 0,
+   "gpus_asked": true,
+   "lib_dirs": [
+    "<cuda>"
+   ],
+   "log": "<T>/strata-iq3_xxs.log",
+   "model_name": "qwen3.8-flash-next-iq3_xxs",
+   "port": 8080,
+   "tokenizer": "<T>/data/packs/iq3_xxs/tokenizer",
+   "uncensored": false,
+   "vision": {
+    "exe": "<T>/engine/<VEXE>",
+    "gpu": true,
+    "max_tokens": 1024,
+    "mmproj": "<T>/models/mmproj-Qwen3.8-Flash-Next-BF16.gguf",
+    "model": "<T>/models/IQ3_XXS/Qwen3.8-Flash-Next-GSQ-RCO-IQ3_XXS-00001-of-00002.gguf"
    }
   }
  },
  "64GB-1x32GB qwen Q2_0": {
   "code": 0,
   "config": {
-   "exe": "<T>/engine/<EXE>",
    "args": [
     "--pack",
     "<T>/data/packs/q2_0",
@@ -947,91 +1160,29 @@
     "per-layer"
    ],
    "cwd": "<T>",
-   "tokenizer": "<T>/data/packs/q2_0/tokenizer",
-   "model_name": "qwen3.8-flash-next-q2_0",
+   "exe": "<T>/engine/<EXE>",
+   "gpu": 0,
+   "gpus_asked": true,
+   "lib_dirs": [
+    "<cuda>"
+   ],
    "log": "<T>/strata-q2_0.log",
-   "lib_dirs": [
-    "<cuda>"
-   ],
+   "model_name": "qwen3.8-flash-next-q2_0",
    "port": 8080,
+   "tokenizer": "<T>/data/packs/q2_0/tokenizer",
    "uncensored": false,
-   "gpu": 0,
-   "gpus_asked": true,
    "vision": {
     "exe": "<T>/engine/<VEXE>",
-    "mmproj": "<T>/models/mmproj-Qwen3.8-Flash-Next-BF16.gguf",
-    "model": "<T>/models/Q2_0/Qwen3.8-Flash-Next-GSQ-RCO-Q2_0-00001-of-00002.gguf",
     "gpu": true,
-    "max_tokens": 1024
+    "max_tokens": 1024,
+    "mmproj": "<T>/models/mmproj-Qwen3.8-Flash-Next-BF16.gguf",
+    "model": "<T>/models/Q2_0/Qwen3.8-Flash-Next-GSQ-RCO-Q2_0-00001-of-00002.gguf"
    }
   }
  },
- "64GB-1x32GB qwen IQ3_XXS": {
+ "64GB-1x32GB qwen recommended": {
   "code": 0,
   "config": {
-   "exe": "<T>/engine/<EXE>",
-   "args": [
-    "--pack",
-    "<T>/data/packs/iq3_xxs",
-    "--native",
-    "<T>/models/IQ3_XXS/Qwen3.8-Flash-Next-GSQ-RCO-IQ3_XXS-00001-of-00002.gguf",
-    "--ple-gguf",
-    "<T>/models/IQ3_XXS/Qwen3.8-Flash-Next-GSQ-RCO-IQ3_XXS-00002-of-00002.gguf",
-    "--expert-profile",
-    "<T>/data/expert-profile.bin",
-    "--expert-cache",
-    "auto",
-    "--prefill",
-    "auto",
-    "--spec",
-    "6",
-    "--spec-min-p",
-    "0.7",
-    "--mtp",
-    "<T>/data/mtp/rt",
-    "--max-context",
-    "131072",
-    "--kv",
-    "int8",
-    "--kv-resident",
-    "32768",
-    "--vision",
-    "--vram-reserve-mib",
-    "700",
-    "--control-vector-scaled",
-    "<REPO>/data/uncensor/qwen-nvfp4-gptq-uncensored.gguf:1.0",
-    "--control-vector-layer-range",
-    "8",
-    "33",
-    "--cvec-mode",
-    "project",
-    "--cvec-dir",
-    "per-layer"
-   ],
-   "cwd": "<T>",
-   "tokenizer": "<T>/data/packs/iq3_xxs/tokenizer",
-   "model_name": "qwen3.8-flash-next-iq3_xxs",
-   "log": "<T>/strata-iq3_xxs.log",
-   "lib_dirs": [
-    "<cuda>"
-   ],
-   "port": 8080,
-   "uncensored": false,
-   "gpu": 0,
-   "gpus_asked": true,
-   "vision": {
-    "exe": "<T>/engine/<VEXE>",
-    "mmproj": "<T>/models/mmproj-Qwen3.8-Flash-Next-BF16.gguf",
-    "model": "<T>/models/IQ3_XXS/Qwen3.8-Flash-Next-GSQ-RCO-IQ3_XXS-00001-of-00002.gguf",
-    "gpu": true,
-    "max_tokens": 1024
-   }
-  }
- },
- "64GB-1x32GB qwen IQ3_S": {
-  "code": 0,
-  "config": {
-   "exe": "<T>/engine/<EXE>",
    "args": [
     "--pack",
     "<T>/data/packs/iq3_s",
@@ -1071,29 +1222,29 @@
     "per-layer"
    ],
    "cwd": "<T>",
-   "tokenizer": "<T>/data/packs/iq3_s/tokenizer",
-   "model_name": "qwen3.8-flash-next-iq3_s",
-   "log": "<T>/strata-iq3_s.log",
+   "exe": "<T>/engine/<EXE>",
+   "gpu": 0,
+   "gpus_asked": true,
    "lib_dirs": [
     "<cuda>"
    ],
+   "log": "<T>/strata-iq3_s.log",
+   "model_name": "qwen3.8-flash-next-iq3_s",
    "port": 8080,
+   "tokenizer": "<T>/data/packs/iq3_s/tokenizer",
    "uncensored": false,
-   "gpu": 0,
-   "gpus_asked": true,
    "vision": {
     "exe": "<T>/engine/<VEXE>",
-    "mmproj": "<T>/models/mmproj-Qwen3.8-Flash-Next-BF16.gguf",
-    "model": "<T>/models/IQ3_S/Qwen3.8-Flash-Next-GSQ-RCO-IQ3_S-00001-of-00002.gguf",
     "gpu": true,
-    "max_tokens": 1024
+    "max_tokens": 1024,
+    "mmproj": "<T>/models/mmproj-Qwen3.8-Flash-Next-BF16.gguf",
+    "model": "<T>/models/IQ3_S/Qwen3.8-Flash-Next-GSQ-RCO-IQ3_S-00001-of-00002.gguf"
    }
   }
  },
  "64GB-1x32GB unsloth UD-Q4_K_XL": {
   "code": 0,
   "config": {
-   "exe": "<T>/engine/<EXE>",
    "args": [
     "--pack",
     "<T>/data/packs/unsloth-ud-q4_k_xl",
@@ -1136,709 +1287,26 @@
    "exe": "<T>/engine/<EXE>",
    "gpu": 0,
    "gpus_asked": true,
-   "vision": {
-    "exe": "<T>/engine/<VEXE>",
-    "mmproj": "<T>/models/mmproj-Qwen3.8-Flash-Next-BF16.gguf",
-    "model": "<T>/models/unsloth-UD-Q4_K_XL/Qwen3.8-Flash-Next-UD-Q4_K_XL-00001-of-00004.gguf",
-    "gpu": true,
-    "max_tokens": 1024
-   }
-  }
- },
- "32GB-2x24GB qwen recommended": {
-  "code": 0,
-  "config": {
-   "exe": "<T>/engine/<EXE>",
-   "args": [
-    "--pack",
-    "<T>/data/packs/iq3_xxs",
-    "--native",
-    "<T>/models/IQ3_XXS/Qwen3.8-Flash-Next-GSQ-RCO-IQ3_XXS-00001-of-00002.gguf",
-    "--ple-gguf",
-    "<T>/models/IQ3_XXS/Qwen3.8-Flash-Next-GSQ-RCO-IQ3_XXS-00002-of-00002.gguf",
-    "--expert-profile",
-    "<T>/data/expert-profile.bin",
-    "--expert-cache",
-    "auto",
-    "--prefill",
-    "auto",
-    "--spec",
-    "6",
-    "--spec-min-p",
-    "0.7",
-    "--mtp",
-    "<T>/data/mtp/rt",
-    "--max-context",
-    "131072",
-    "--kv",
-    "int8",
-    "--resident-experts",
-    "--vision",
-    "--vram-reserve-mib",
-    "700",
-    "--control-vector-scaled",
-    "<REPO>/data/uncensor/qwen-nvfp4-gptq-uncensored.gguf:1.0",
-    "--control-vector-layer-range",
-    "8",
-    "33",
-    "--cvec-mode",
-    "project",
-    "--cvec-dir",
-    "per-layer"
-   ],
-   "cwd": "<T>",
-   "tokenizer": "<T>/data/packs/iq3_xxs/tokenizer",
-   "model_name": "qwen3.8-flash-next-iq3_xxs",
-   "log": "<T>/strata-iq3_xxs.log",
    "lib_dirs": [
     "<cuda>"
    ],
-   "port": 8080,
-   "uncensored": false,
-   "gpu": [
-    0,
-    1
-   ],
-   "gpus_asked": true,
-   "layer_split": "auto",
-   "gpu_order": "as_given",
-   "gpu_roles": {
-    "0": "helper",
-    "1": "main"
-   },
-   "vision": {
-    "exe": "<T>/engine/<VEXE>",
-    "mmproj": "<T>/models/mmproj-Qwen3.8-Flash-Next-BF16.gguf",
-    "model": "<T>/models/IQ3_XXS/Qwen3.8-Flash-Next-GSQ-RCO-IQ3_XXS-00001-of-00002.gguf",
-    "gpu": true,
-    "max_tokens": 1024
-   }
-  }
- },
- "32GB-2x24GB qwen Q2_0": {
-  "code": 0,
-  "config": {
-   "exe": "<T>/engine/<EXE>",
-   "args": [
-    "--pack",
-    "<T>/data/packs/q2_0",
-    "--native",
-    "<T>/models/Q2_0/Qwen3.8-Flash-Next-GSQ-RCO-Q2_0-00001-of-00002.gguf",
-    "--ple-gguf",
-    "<T>/models/Q2_0/Qwen3.8-Flash-Next-GSQ-RCO-Q2_0-00002-of-00002.gguf",
-    "--expert-profile",
-    "<T>/data/expert-profile.bin",
-    "--expert-cache",
-    "auto",
-    "--prefill",
-    "auto",
-    "--spec",
-    "6",
-    "--spec-min-p",
-    "0.7",
-    "--mtp",
-    "<T>/data/mtp/rt",
-    "--max-context",
-    "131072",
-    "--kv",
-    "int8",
-    "--resident-experts",
-    "--vision",
-    "--vram-reserve-mib",
-    "700",
-    "--control-vector-scaled",
-    "<REPO>/data/uncensor/qwen-nvfp4-gptq-uncensored.gguf:1.0",
-    "--control-vector-layer-range",
-    "8",
-    "33",
-    "--cvec-mode",
-    "project",
-    "--cvec-dir",
-    "per-layer"
-   ],
-   "cwd": "<T>",
-   "tokenizer": "<T>/data/packs/q2_0/tokenizer",
-   "model_name": "qwen3.8-flash-next-q2_0",
-   "log": "<T>/strata-q2_0.log",
-   "lib_dirs": [
-    "<cuda>"
-   ],
-   "port": 8080,
-   "uncensored": false,
-   "gpu": [
-    0,
-    1
-   ],
-   "gpus_asked": true,
-   "layer_split": "auto",
-   "gpu_order": "as_given",
-   "gpu_roles": {
-    "0": "helper",
-    "1": "main"
-   },
-   "vision": {
-    "exe": "<T>/engine/<VEXE>",
-    "mmproj": "<T>/models/mmproj-Qwen3.8-Flash-Next-BF16.gguf",
-    "model": "<T>/models/Q2_0/Qwen3.8-Flash-Next-GSQ-RCO-Q2_0-00001-of-00002.gguf",
-    "gpu": true,
-    "max_tokens": 1024
-   }
-  }
- },
- "32GB-2x24GB qwen IQ3_XXS": {
-  "code": 0,
-  "config": {
-   "exe": "<T>/engine/<EXE>",
-   "args": [
-    "--pack",
-    "<T>/data/packs/iq3_xxs",
-    "--native",
-    "<T>/models/IQ3_XXS/Qwen3.8-Flash-Next-GSQ-RCO-IQ3_XXS-00001-of-00002.gguf",
-    "--ple-gguf",
-    "<T>/models/IQ3_XXS/Qwen3.8-Flash-Next-GSQ-RCO-IQ3_XXS-00002-of-00002.gguf",
-    "--expert-profile",
-    "<T>/data/expert-profile.bin",
-    "--expert-cache",
-    "auto",
-    "--prefill",
-    "auto",
-    "--spec",
-    "6",
-    "--spec-min-p",
-    "0.7",
-    "--mtp",
-    "<T>/data/mtp/rt",
-    "--max-context",
-    "131072",
-    "--kv",
-    "int8",
-    "--resident-experts",
-    "--vision",
-    "--vram-reserve-mib",
-    "700",
-    "--control-vector-scaled",
-    "<REPO>/data/uncensor/qwen-nvfp4-gptq-uncensored.gguf:1.0",
-    "--control-vector-layer-range",
-    "8",
-    "33",
-    "--cvec-mode",
-    "project",
-    "--cvec-dir",
-    "per-layer"
-   ],
-   "cwd": "<T>",
-   "tokenizer": "<T>/data/packs/iq3_xxs/tokenizer",
-   "model_name": "qwen3.8-flash-next-iq3_xxs",
-   "log": "<T>/strata-iq3_xxs.log",
-   "lib_dirs": [
-    "<cuda>"
-   ],
-   "port": 8080,
-   "uncensored": false,
-   "gpu": [
-    0,
-    1
-   ],
-   "gpus_asked": true,
-   "layer_split": "auto",
-   "gpu_order": "as_given",
-   "gpu_roles": {
-    "0": "helper",
-    "1": "main"
-   },
-   "vision": {
-    "exe": "<T>/engine/<VEXE>",
-    "mmproj": "<T>/models/mmproj-Qwen3.8-Flash-Next-BF16.gguf",
-    "model": "<T>/models/IQ3_XXS/Qwen3.8-Flash-Next-GSQ-RCO-IQ3_XXS-00001-of-00002.gguf",
-    "gpu": true,
-    "max_tokens": 1024
-   }
-  }
- },
- "32GB-2x24GB qwen IQ3_S": {
-  "code": 0,
-  "config": {
-   "exe": "<T>/engine/<EXE>",
-   "args": [
-    "--pack",
-    "<T>/data/packs/iq3_s",
-    "--native",
-    "<T>/models/IQ3_S/Qwen3.8-Flash-Next-GSQ-RCO-IQ3_S-00001-of-00002.gguf",
-    "--ple-gguf",
-    "<T>/models/IQ3_S/Qwen3.8-Flash-Next-GSQ-RCO-IQ3_S-00002-of-00002.gguf",
-    "--expert-profile",
-    "<T>/data/expert-profile.bin",
-    "--expert-cache",
-    "auto",
-    "--prefill",
-    "auto",
-    "--spec",
-    "6",
-    "--spec-min-p",
-    "0.7",
-    "--mtp",
-    "<T>/data/mtp/rt",
-    "--max-context",
-    "131072",
-    "--kv",
-    "int8",
-    "--resident-experts",
-    "--vision",
-    "--vram-reserve-mib",
-    "700",
-    "--control-vector-scaled",
-    "<REPO>/data/uncensor/qwen-nvfp4-gptq-uncensored.gguf:1.0",
-    "--control-vector-layer-range",
-    "8",
-    "33",
-    "--cvec-mode",
-    "project",
-    "--cvec-dir",
-    "per-layer"
-   ],
-   "cwd": "<T>",
-   "tokenizer": "<T>/data/packs/iq3_s/tokenizer",
-   "model_name": "qwen3.8-flash-next-iq3_s",
-   "log": "<T>/strata-iq3_s.log",
-   "lib_dirs": [
-    "<cuda>"
-   ],
-   "port": 8080,
-   "uncensored": false,
-   "gpu": [
-    0,
-    1
-   ],
-   "gpus_asked": true,
-   "layer_split": "auto",
-   "gpu_order": "as_given",
-   "gpu_roles": {
-    "0": "helper",
-    "1": "main"
-   },
-   "vision": {
-    "exe": "<T>/engine/<VEXE>",
-    "mmproj": "<T>/models/mmproj-Qwen3.8-Flash-Next-BF16.gguf",
-    "model": "<T>/models/IQ3_S/Qwen3.8-Flash-Next-GSQ-RCO-IQ3_S-00001-of-00002.gguf",
-    "gpu": true,
-    "max_tokens": 1024
-   }
-  }
- },
- "32GB-2x24GB unsloth UD-Q4_K_XL": {
-  "code": 0,
-  "config": {
-   "exe": "<T>/engine/<EXE>",
-   "args": [
-    "--pack",
-    "<T>/data/packs/unsloth-ud-q4_k_xl",
-    "--native",
-    "<T>/models/unsloth-UD-Q4_K_XL/Qwen3.8-Flash-Next-UD-Q4_K_XL-00001-of-00004.gguf",
-    "--expert-profile",
-    "<T>/data/expert-profile.bin",
-    "--expert-cache",
-    "auto",
-    "--prefill",
-    "auto",
-    "--spec",
-    "6",
-    "--spec-min-p",
-    "0.7",
-    "--mtp",
-    "<T>/data/mtp/rt",
-    "--max-context",
-    "131072",
-    "--kv",
-    "int8",
-    "--resident-budget-gib",
-    "8",
-    "--vision",
-    "--vram-reserve-mib",
-    "700",
-    "--control-vector-scaled",
-    "<REPO>/data/uncensor/qwen-nvfp4-gptq-uncensored.gguf:1.0",
-    "--control-vector-layer-range",
-    "8",
-    "33",
-    "--cvec-mode",
-    "project",
-    "--cvec-dir",
-    "per-layer"
-   ],
-   "cwd": "<T>",
-   "tokenizer": "<T>/data/packs/unsloth-ud-q4_k_xl/tokenizer",
-   "model_name": "qwen3.8-flash-next-unsloth-ud-q4_k_xl",
    "log": "<T>/strata-unsloth-ud-q4_k_xl.log",
-   "lib_dirs": [
-    "<cuda>"
-   ],
-   "port": 8080,
-   "env": {
-    "STRATA_HC_Q8": "1"
-   },
-   "uncensored": false,
-   "gpu": 0,
-   "gpus_asked": true,
-   "gpu_roles": {
-    "0": "main",
-    "1": "off"
-   },
-   "vision": {
-    "exe": "<T>/engine/<VEXE>",
-    "mmproj": "<T>/models/mmproj-Qwen3.8-Flash-Next-BF16.gguf",
-    "model": "<T>/models/unsloth-UD-Q4_K_XL/Qwen3.8-Flash-Next-UD-Q4_K_XL-00001-of-00004.gguf",
-    "gpu": true,
-    "max_tokens": 1024
-   }
-  }
- },
- "47GB-2x16GB qwen recommended": {
-  "code": 0,
-  "config": {
-   "exe": "<T>/engine/<EXE>",
-   "args": [
-    "--pack",
-    "<T>/data/packs/iq3_xxs",
-    "--native",
-    "<T>/models/IQ3_XXS/Qwen3.8-Flash-Next-GSQ-RCO-IQ3_XXS-00001-of-00002.gguf",
-    "--ple-gguf",
-    "<T>/models/IQ3_XXS/Qwen3.8-Flash-Next-GSQ-RCO-IQ3_XXS-00002-of-00002.gguf",
-    "--expert-profile",
-    "<T>/data/expert-profile.bin",
-    "--expert-cache",
-    "auto",
-    "--prefill",
-    "auto",
-    "--spec",
-    "6",
-    "--spec-min-p",
-    "0.7",
-    "--mtp",
-    "<T>/data/mtp/rt",
-    "--max-context",
-    "131072",
-    "--kv",
-    "int8",
-    "--resident-experts",
-    "--vision",
-    "--control-vector-scaled",
-    "<REPO>/data/uncensor/qwen-nvfp4-gptq-uncensored.gguf:1.0",
-    "--control-vector-layer-range",
-    "8",
-    "33",
-    "--cvec-mode",
-    "project",
-    "--cvec-dir",
-    "per-layer"
-   ],
-   "cwd": "<T>",
-   "tokenizer": "<T>/data/packs/iq3_xxs/tokenizer",
-   "model_name": "qwen3.8-flash-next-iq3_xxs",
-   "log": "<T>/strata-iq3_xxs.log",
-   "lib_dirs": [
-    "<cuda>"
-   ],
-   "port": 8080,
-   "uncensored": false,
-   "gpu": [
-    0,
-    1
-   ],
-   "gpus_asked": true,
-   "layer_split": "auto",
-   "gpu_order": "as_given",
-   "gpu_roles": {
-    "0": "helper",
-    "1": "main"
-   },
-   "vision": {
-    "exe": "<T>/engine/<VEXE>",
-    "mmproj": "<T>/models/mmproj-Qwen3.8-Flash-Next-BF16.gguf",
-    "model": "<T>/models/IQ3_XXS/Qwen3.8-Flash-Next-GSQ-RCO-IQ3_XXS-00001-of-00002.gguf",
-    "gpu": false,
-    "max_tokens": 300,
-    "threads": 6
-   }
-  }
- },
- "47GB-2x16GB qwen Q2_0": {
-  "code": 0,
-  "config": {
-   "exe": "<T>/engine/<EXE>",
-   "args": [
-    "--pack",
-    "<T>/data/packs/q2_0",
-    "--native",
-    "<T>/models/Q2_0/Qwen3.8-Flash-Next-GSQ-RCO-Q2_0-00001-of-00002.gguf",
-    "--ple-gguf",
-    "<T>/models/Q2_0/Qwen3.8-Flash-Next-GSQ-RCO-Q2_0-00002-of-00002.gguf",
-    "--expert-profile",
-    "<T>/data/expert-profile.bin",
-    "--expert-cache",
-    "auto",
-    "--prefill",
-    "auto",
-    "--spec",
-    "6",
-    "--spec-min-p",
-    "0.7",
-    "--mtp",
-    "<T>/data/mtp/rt",
-    "--max-context",
-    "131072",
-    "--kv",
-    "int8",
-    "--kv-resident",
-    "32768",
-    "--vision",
-    "--control-vector-scaled",
-    "<REPO>/data/uncensor/qwen-nvfp4-gptq-uncensored.gguf:1.0",
-    "--control-vector-layer-range",
-    "8",
-    "33",
-    "--cvec-mode",
-    "project",
-    "--cvec-dir",
-    "per-layer"
-   ],
-   "cwd": "<T>",
-   "tokenizer": "<T>/data/packs/q2_0/tokenizer",
-   "model_name": "qwen3.8-flash-next-q2_0",
-   "log": "<T>/strata-q2_0.log",
-   "lib_dirs": [
-    "<cuda>"
-   ],
-   "port": 8080,
-   "uncensored": false,
-   "gpu": [
-    0,
-    1
-   ],
-   "gpus_asked": true,
-   "layer_split": "auto",
-   "gpu_order": "as_given",
-   "gpu_roles": {
-    "0": "helper",
-    "1": "main"
-   },
-   "vision": {
-    "exe": "<T>/engine/<VEXE>",
-    "mmproj": "<T>/models/mmproj-Qwen3.8-Flash-Next-BF16.gguf",
-    "model": "<T>/models/Q2_0/Qwen3.8-Flash-Next-GSQ-RCO-Q2_0-00001-of-00002.gguf",
-    "gpu": false,
-    "max_tokens": 300,
-    "threads": 6
-   }
-  }
- },
- "47GB-2x16GB qwen IQ3_XXS": {
-  "code": 0,
-  "config": {
-   "exe": "<T>/engine/<EXE>",
-   "args": [
-    "--pack",
-    "<T>/data/packs/iq3_xxs",
-    "--native",
-    "<T>/models/IQ3_XXS/Qwen3.8-Flash-Next-GSQ-RCO-IQ3_XXS-00001-of-00002.gguf",
-    "--ple-gguf",
-    "<T>/models/IQ3_XXS/Qwen3.8-Flash-Next-GSQ-RCO-IQ3_XXS-00002-of-00002.gguf",
-    "--expert-profile",
-    "<T>/data/expert-profile.bin",
-    "--expert-cache",
-    "auto",
-    "--prefill",
-    "auto",
-    "--spec",
-    "6",
-    "--spec-min-p",
-    "0.7",
-    "--mtp",
-    "<T>/data/mtp/rt",
-    "--max-context",
-    "131072",
-    "--kv",
-    "int8",
-    "--resident-experts",
-    "--vision",
-    "--control-vector-scaled",
-    "<REPO>/data/uncensor/qwen-nvfp4-gptq-uncensored.gguf:1.0",
-    "--control-vector-layer-range",
-    "8",
-    "33",
-    "--cvec-mode",
-    "project",
-    "--cvec-dir",
-    "per-layer"
-   ],
-   "cwd": "<T>",
-   "tokenizer": "<T>/data/packs/iq3_xxs/tokenizer",
-   "model_name": "qwen3.8-flash-next-iq3_xxs",
-   "log": "<T>/strata-iq3_xxs.log",
-   "lib_dirs": [
-    "<cuda>"
-   ],
-   "port": 8080,
-   "uncensored": false,
-   "gpu": [
-    0,
-    1
-   ],
-   "gpus_asked": true,
-   "layer_split": "auto",
-   "gpu_order": "as_given",
-   "gpu_roles": {
-    "0": "helper",
-    "1": "main"
-   },
-   "vision": {
-    "exe": "<T>/engine/<VEXE>",
-    "mmproj": "<T>/models/mmproj-Qwen3.8-Flash-Next-BF16.gguf",
-    "model": "<T>/models/IQ3_XXS/Qwen3.8-Flash-Next-GSQ-RCO-IQ3_XXS-00001-of-00002.gguf",
-    "gpu": false,
-    "max_tokens": 300,
-    "threads": 6
-   }
-  }
- },
- "47GB-2x16GB qwen IQ3_S": {
-  "code": 0,
-  "config": {
-   "exe": "<T>/engine/<EXE>",
-   "args": [
-    "--pack",
-    "<T>/data/packs/iq3_s",
-    "--native",
-    "<T>/models/IQ3_S/Qwen3.8-Flash-Next-GSQ-RCO-IQ3_S-00001-of-00002.gguf",
-    "--ple-gguf",
-    "<T>/models/IQ3_S/Qwen3.8-Flash-Next-GSQ-RCO-IQ3_S-00002-of-00002.gguf",
-    "--expert-profile",
-    "<T>/data/expert-profile.bin",
-    "--expert-cache",
-    "auto",
-    "--prefill",
-    "auto",
-    "--spec",
-    "6",
-    "--spec-min-p",
-    "0.7",
-    "--mtp",
-    "<T>/data/mtp/rt",
-    "--max-context",
-    "131072",
-    "--kv",
-    "int8",
-    "--resident-experts",
-    "--vision",
-    "--control-vector-scaled",
-    "<REPO>/data/uncensor/qwen-nvfp4-gptq-uncensored.gguf:1.0",
-    "--control-vector-layer-range",
-    "8",
-    "33",
-    "--cvec-mode",
-    "project",
-    "--cvec-dir",
-    "per-layer"
-   ],
-   "cwd": "<T>",
-   "tokenizer": "<T>/data/packs/iq3_s/tokenizer",
-   "model_name": "qwen3.8-flash-next-iq3_s",
-   "log": "<T>/strata-iq3_s.log",
-   "lib_dirs": [
-    "<cuda>"
-   ],
-   "port": 8080,
-   "uncensored": false,
-   "gpu": [
-    0,
-    1
-   ],
-   "gpus_asked": true,
-   "layer_split": "auto",
-   "gpu_order": "as_given",
-   "gpu_roles": {
-    "0": "helper",
-    "1": "main"
-   },
-   "vision": {
-    "exe": "<T>/engine/<VEXE>",
-    "mmproj": "<T>/models/mmproj-Qwen3.8-Flash-Next-BF16.gguf",
-    "model": "<T>/models/IQ3_S/Qwen3.8-Flash-Next-GSQ-RCO-IQ3_S-00001-of-00002.gguf",
-    "gpu": false,
-    "max_tokens": 300,
-    "threads": 6
-   }
-  }
- },
- "47GB-2x16GB unsloth UD-Q4_K_XL": {
-  "code": 0,
-  "config": {
-   "exe": "<T>/engine/<EXE>",
-   "args": [
-    "--pack",
-    "<T>/data/packs/unsloth-ud-q4_k_xl",
-    "--native",
-    "<T>/models/unsloth-UD-Q4_K_XL/Qwen3.8-Flash-Next-UD-Q4_K_XL-00001-of-00004.gguf",
-    "--expert-profile",
-    "<T>/data/expert-profile.bin",
-    "--expert-cache",
-    "auto",
-    "--prefill",
-    "auto",
-    "--spec",
-    "6",
-    "--spec-min-p",
-    "0.7",
-    "--mtp",
-    "<T>/data/mtp/rt",
-    "--max-context",
-    "131072",
-    "--kv",
-    "int8",
-    "--resident-budget-gib",
-    "23",
-    "--vision",
-    "--control-vector-scaled",
-    "<REPO>/data/uncensor/qwen-nvfp4-gptq-uncensored.gguf:1.0",
-    "--control-vector-layer-range",
-    "8",
-    "33",
-    "--cvec-mode",
-    "project",
-    "--cvec-dir",
-    "per-layer"
-   ],
-   "cwd": "<T>",
-   "tokenizer": "<T>/data/packs/unsloth-ud-q4_k_xl/tokenizer",
    "model_name": "qwen3.8-flash-next-unsloth-ud-q4_k_xl",
-   "log": "<T>/strata-unsloth-ud-q4_k_xl.log",
-   "lib_dirs": [
-    "<cuda>"
-   ],
    "port": 8080,
-   "env": {
-    "STRATA_HC_Q8": "1"
-   },
+   "tokenizer": "<T>/data/packs/unsloth-ud-q4_k_xl/tokenizer",
    "uncensored": false,
-   "gpu": 0,
-   "gpus_asked": true,
-   "gpu_roles": {
-    "0": "main",
-    "1": "off"
-   },
    "vision": {
     "exe": "<T>/engine/<VEXE>",
+    "gpu": true,
+    "max_tokens": 1024,
     "mmproj": "<T>/models/mmproj-Qwen3.8-Flash-Next-BF16.gguf",
-    "model": "<T>/models/unsloth-UD-Q4_K_XL/Qwen3.8-Flash-Next-UD-Q4_K_XL-00001-of-00004.gguf",
-    "gpu": false,
-    "max_tokens": 300,
-    "threads": 6
+    "model": "<T>/models/unsloth-UD-Q4_K_XL/Qwen3.8-Flash-Next-UD-Q4_K_XL-00001-of-00004.gguf"
    }
   }
  },
- "96GB-1x16GB qwen recommended": {
+ "96GB-1x16GB qwen IQ3_S": {
   "code": 0,
   "config": {
-   "exe": "<T>/engine/<EXE>",
    "args": [
     "--pack",
     "<T>/data/packs/iq3_s",
@@ -1876,83 +1344,23 @@
     "per-layer"
    ],
    "cwd": "<T>",
-   "tokenizer": "<T>/data/packs/iq3_s/tokenizer",
-   "model_name": "qwen3.8-flash-next-iq3_s",
-   "log": "<T>/strata-iq3_s.log",
+   "exe": "<T>/engine/<EXE>",
+   "gpu": 0,
+   "gpus_asked": true,
    "lib_dirs": [
     "<cuda>"
    ],
+   "log": "<T>/strata-iq3_s.log",
+   "model_name": "qwen3.8-flash-next-iq3_s",
    "port": 8080,
+   "tokenizer": "<T>/data/packs/iq3_s/tokenizer",
    "uncensored": false,
-   "gpu": 0,
-   "gpus_asked": true,
    "vision": {
     "exe": "<T>/engine/<VEXE>",
+    "gpu": false,
+    "max_tokens": 300,
     "mmproj": "<T>/models/mmproj-Qwen3.8-Flash-Next-BF16.gguf",
     "model": "<T>/models/IQ3_S/Qwen3.8-Flash-Next-GSQ-RCO-IQ3_S-00001-of-00002.gguf",
-    "gpu": false,
-    "max_tokens": 300,
-    "threads": 6
-   }
-  }
- },
- "96GB-1x16GB qwen Q2_0": {
-  "code": 0,
-  "config": {
-   "exe": "<T>/engine/<EXE>",
-   "args": [
-    "--pack",
-    "<T>/data/packs/q2_0",
-    "--native",
-    "<T>/models/Q2_0/Qwen3.8-Flash-Next-GSQ-RCO-Q2_0-00001-of-00002.gguf",
-    "--ple-gguf",
-    "<T>/models/Q2_0/Qwen3.8-Flash-Next-GSQ-RCO-Q2_0-00002-of-00002.gguf",
-    "--expert-profile",
-    "<T>/data/expert-profile.bin",
-    "--expert-cache",
-    "auto",
-    "--prefill",
-    "auto",
-    "--spec",
-    "6",
-    "--spec-min-p",
-    "0.7",
-    "--mtp",
-    "<T>/data/mtp/rt",
-    "--max-context",
-    "131072",
-    "--kv",
-    "int8",
-    "--kv-resident",
-    "32768",
-    "--vision",
-    "--control-vector-scaled",
-    "<REPO>/data/uncensor/qwen-nvfp4-gptq-uncensored.gguf:1.0",
-    "--control-vector-layer-range",
-    "8",
-    "33",
-    "--cvec-mode",
-    "project",
-    "--cvec-dir",
-    "per-layer"
-   ],
-   "cwd": "<T>",
-   "tokenizer": "<T>/data/packs/q2_0/tokenizer",
-   "model_name": "qwen3.8-flash-next-q2_0",
-   "log": "<T>/strata-q2_0.log",
-   "lib_dirs": [
-    "<cuda>"
-   ],
-   "port": 8080,
-   "uncensored": false,
-   "gpu": 0,
-   "gpus_asked": true,
-   "vision": {
-    "exe": "<T>/engine/<VEXE>",
-    "mmproj": "<T>/models/mmproj-Qwen3.8-Flash-Next-BF16.gguf",
-    "model": "<T>/models/Q2_0/Qwen3.8-Flash-Next-GSQ-RCO-Q2_0-00001-of-00002.gguf",
-    "gpu": false,
-    "max_tokens": 300,
     "threads": 6
    }
   }
@@ -1960,7 +1368,6 @@
  "96GB-1x16GB qwen IQ3_XXS": {
   "code": 0,
   "config": {
-   "exe": "<T>/engine/<EXE>",
    "args": [
     "--pack",
     "<T>/data/packs/iq3_xxs",
@@ -1998,215 +1405,30 @@
     "per-layer"
    ],
    "cwd": "<T>",
-   "tokenizer": "<T>/data/packs/iq3_xxs/tokenizer",
-   "model_name": "qwen3.8-flash-next-iq3_xxs",
-   "log": "<T>/strata-iq3_xxs.log",
+   "exe": "<T>/engine/<EXE>",
+   "gpu": 0,
+   "gpus_asked": true,
    "lib_dirs": [
     "<cuda>"
    ],
+   "log": "<T>/strata-iq3_xxs.log",
+   "model_name": "qwen3.8-flash-next-iq3_xxs",
    "port": 8080,
+   "tokenizer": "<T>/data/packs/iq3_xxs/tokenizer",
    "uncensored": false,
-   "gpu": 0,
-   "gpus_asked": true,
    "vision": {
     "exe": "<T>/engine/<VEXE>",
+    "gpu": false,
+    "max_tokens": 300,
     "mmproj": "<T>/models/mmproj-Qwen3.8-Flash-Next-BF16.gguf",
     "model": "<T>/models/IQ3_XXS/Qwen3.8-Flash-Next-GSQ-RCO-IQ3_XXS-00001-of-00002.gguf",
-    "gpu": false,
-    "max_tokens": 300,
     "threads": 6
    }
   }
  },
- "96GB-1x16GB qwen IQ3_S": {
+ "96GB-1x16GB qwen Q2_0": {
   "code": 0,
   "config": {
-   "exe": "<T>/engine/<EXE>",
-   "args": [
-    "--pack",
-    "<T>/data/packs/iq3_s",
-    "--native",
-    "<T>/models/IQ3_S/Qwen3.8-Flash-Next-GSQ-RCO-IQ3_S-00001-of-00002.gguf",
-    "--ple-gguf",
-    "<T>/models/IQ3_S/Qwen3.8-Flash-Next-GSQ-RCO-IQ3_S-00002-of-00002.gguf",
-    "--expert-profile",
-    "<T>/data/expert-profile.bin",
-    "--expert-cache",
-    "auto",
-    "--prefill",
-    "auto",
-    "--spec",
-    "6",
-    "--spec-min-p",
-    "0.7",
-    "--mtp",
-    "<T>/data/mtp/rt",
-    "--max-context",
-    "131072",
-    "--kv",
-    "int8",
-    "--kv-resident",
-    "32768",
-    "--vision",
-    "--control-vector-scaled",
-    "<REPO>/data/uncensor/qwen-nvfp4-gptq-uncensored.gguf:1.0",
-    "--control-vector-layer-range",
-    "8",
-    "33",
-    "--cvec-mode",
-    "project",
-    "--cvec-dir",
-    "per-layer"
-   ],
-   "cwd": "<T>",
-   "tokenizer": "<T>/data/packs/iq3_s/tokenizer",
-   "model_name": "qwen3.8-flash-next-iq3_s",
-   "log": "<T>/strata-iq3_s.log",
-   "lib_dirs": [
-    "<cuda>"
-   ],
-   "port": 8080,
-   "uncensored": false,
-   "gpu": 0,
-   "gpus_asked": true,
-   "vision": {
-    "exe": "<T>/engine/<VEXE>",
-    "mmproj": "<T>/models/mmproj-Qwen3.8-Flash-Next-BF16.gguf",
-    "model": "<T>/models/IQ3_S/Qwen3.8-Flash-Next-GSQ-RCO-IQ3_S-00001-of-00002.gguf",
-    "gpu": false,
-    "max_tokens": 300,
-    "threads": 6
-   }
-  }
- },
- "96GB-1x16GB unsloth UD-Q4_K_XL": {
-  "code": 0,
-  "config": {
-   "exe": "<T>/engine/<EXE>",
-   "args": [
-    "--pack",
-    "<T>/data/packs/unsloth-ud-q4_k_xl",
-    "--native",
-    "<T>/models/unsloth-UD-Q4_K_XL/Qwen3.8-Flash-Next-UD-Q4_K_XL-00001-of-00004.gguf",
-    "--expert-profile",
-    "<T>/data/expert-profile.bin",
-    "--expert-cache",
-    "auto",
-    "--prefill",
-    "auto",
-    "--spec",
-    "6",
-    "--spec-min-p",
-    "0.7",
-    "--mtp",
-    "<T>/data/mtp/rt",
-    "--max-context",
-    "131072",
-    "--kv",
-    "int8",
-    "--kv-resident",
-    "32768",
-    "--vision",
-    "--control-vector-scaled",
-    "<REPO>/data/uncensor/qwen-nvfp4-gptq-uncensored.gguf:1.0",
-    "--control-vector-layer-range",
-    "8",
-    "33",
-    "--cvec-mode",
-    "project",
-    "--cvec-dir",
-    "per-layer"
-   ],
-   "cwd": "<T>",
-   "tokenizer": "<T>/data/packs/unsloth-ud-q4_k_xl/tokenizer",
-   "model_name": "qwen3.8-flash-next-unsloth-ud-q4_k_xl",
-   "log": "<T>/strata-unsloth-ud-q4_k_xl.log",
-   "lib_dirs": [
-    "<cuda>"
-   ],
-   "port": 8080,
-   "env": {
-    "STRATA_ROUTE_TAIL_SKIP": "0"
-   },
-   "uncensored": false,
-   "gpu": 0,
-   "gpus_asked": true,
-   "vision": {
-    "exe": "<T>/engine/<VEXE>",
-    "mmproj": "<T>/models/mmproj-Qwen3.8-Flash-Next-BF16.gguf",
-    "model": "<T>/models/unsloth-UD-Q4_K_XL/Qwen3.8-Flash-Next-UD-Q4_K_XL-00001-of-00004.gguf",
-    "gpu": false,
-    "max_tokens": 300,
-    "threads": 6
-   }
-  }
- },
- "128GB-1x24GB qwen recommended": {
-  "code": 0,
-  "config": {
-   "exe": "<T>/engine/<EXE>",
-   "args": [
-    "--pack",
-    "<T>/data/packs/iq3_s",
-    "--native",
-    "<T>/models/IQ3_S/Qwen3.8-Flash-Next-GSQ-RCO-IQ3_S-00001-of-00002.gguf",
-    "--ple-gguf",
-    "<T>/models/IQ3_S/Qwen3.8-Flash-Next-GSQ-RCO-IQ3_S-00002-of-00002.gguf",
-    "--expert-profile",
-    "<T>/data/expert-profile.bin",
-    "--expert-cache",
-    "auto",
-    "--prefill",
-    "auto",
-    "--spec",
-    "6",
-    "--spec-min-p",
-    "0.7",
-    "--mtp",
-    "<T>/data/mtp/rt",
-    "--max-context",
-    "131072",
-    "--kv",
-    "int8",
-    "--kv-resident",
-    "32768",
-    "--vision",
-    "--vram-reserve-mib",
-    "700",
-    "--control-vector-scaled",
-    "<REPO>/data/uncensor/qwen-nvfp4-gptq-uncensored.gguf:1.0",
-    "--control-vector-layer-range",
-    "8",
-    "33",
-    "--cvec-mode",
-    "project",
-    "--cvec-dir",
-    "per-layer"
-   ],
-   "cwd": "<T>",
-   "tokenizer": "<T>/data/packs/iq3_s/tokenizer",
-   "model_name": "qwen3.8-flash-next-iq3_s",
-   "log": "<T>/strata-iq3_s.log",
-   "lib_dirs": [
-    "<cuda>"
-   ],
-   "port": 8080,
-   "uncensored": false,
-   "gpu": 0,
-   "gpus_asked": true,
-   "vision": {
-    "exe": "<T>/engine/<VEXE>",
-    "mmproj": "<T>/models/mmproj-Qwen3.8-Flash-Next-BF16.gguf",
-    "model": "<T>/models/IQ3_S/Qwen3.8-Flash-Next-GSQ-RCO-IQ3_S-00001-of-00002.gguf",
-    "gpu": true,
-    "max_tokens": 1024
-   }
-  }
- },
- "128GB-1x24GB qwen Q2_0": {
-  "code": 0,
-  "config": {
-   "exe": "<T>/engine/<EXE>",
    "args": [
     "--pack",
     "<T>/data/packs/q2_0",
@@ -2233,8 +1455,6 @@
     "--kv-resident",
     "32768",
     "--vision",
-    "--vram-reserve-mib",
-    "700",
     "--control-vector-scaled",
     "<REPO>/data/uncensor/qwen-nvfp4-gptq-uncensored.gguf:1.0",
     "--control-vector-layer-range",
@@ -2246,91 +1466,30 @@
     "per-layer"
    ],
    "cwd": "<T>",
-   "tokenizer": "<T>/data/packs/q2_0/tokenizer",
-   "model_name": "qwen3.8-flash-next-q2_0",
-   "log": "<T>/strata-q2_0.log",
+   "exe": "<T>/engine/<EXE>",
+   "gpu": 0,
+   "gpus_asked": true,
    "lib_dirs": [
     "<cuda>"
    ],
+   "log": "<T>/strata-q2_0.log",
+   "model_name": "qwen3.8-flash-next-q2_0",
    "port": 8080,
+   "tokenizer": "<T>/data/packs/q2_0/tokenizer",
    "uncensored": false,
-   "gpu": 0,
-   "gpus_asked": true,
    "vision": {
     "exe": "<T>/engine/<VEXE>",
+    "gpu": false,
+    "max_tokens": 300,
     "mmproj": "<T>/models/mmproj-Qwen3.8-Flash-Next-BF16.gguf",
     "model": "<T>/models/Q2_0/Qwen3.8-Flash-Next-GSQ-RCO-Q2_0-00001-of-00002.gguf",
-    "gpu": true,
-    "max_tokens": 1024
+    "threads": 6
    }
   }
  },
- "128GB-1x24GB qwen IQ3_XXS": {
+ "96GB-1x16GB qwen recommended": {
   "code": 0,
   "config": {
-   "exe": "<T>/engine/<EXE>",
-   "args": [
-    "--pack",
-    "<T>/data/packs/iq3_xxs",
-    "--native",
-    "<T>/models/IQ3_XXS/Qwen3.8-Flash-Next-GSQ-RCO-IQ3_XXS-00001-of-00002.gguf",
-    "--ple-gguf",
-    "<T>/models/IQ3_XXS/Qwen3.8-Flash-Next-GSQ-RCO-IQ3_XXS-00002-of-00002.gguf",
-    "--expert-profile",
-    "<T>/data/expert-profile.bin",
-    "--expert-cache",
-    "auto",
-    "--prefill",
-    "auto",
-    "--spec",
-    "6",
-    "--spec-min-p",
-    "0.7",
-    "--mtp",
-    "<T>/data/mtp/rt",
-    "--max-context",
-    "131072",
-    "--kv",
-    "int8",
-    "--kv-resident",
-    "32768",
-    "--vision",
-    "--vram-reserve-mib",
-    "700",
-    "--control-vector-scaled",
-    "<REPO>/data/uncensor/qwen-nvfp4-gptq-uncensored.gguf:1.0",
-    "--control-vector-layer-range",
-    "8",
-    "33",
-    "--cvec-mode",
-    "project",
-    "--cvec-dir",
-    "per-layer"
-   ],
-   "cwd": "<T>",
-   "tokenizer": "<T>/data/packs/iq3_xxs/tokenizer",
-   "model_name": "qwen3.8-flash-next-iq3_xxs",
-   "log": "<T>/strata-iq3_xxs.log",
-   "lib_dirs": [
-    "<cuda>"
-   ],
-   "port": 8080,
-   "uncensored": false,
-   "gpu": 0,
-   "gpus_asked": true,
-   "vision": {
-    "exe": "<T>/engine/<VEXE>",
-    "mmproj": "<T>/models/mmproj-Qwen3.8-Flash-Next-BF16.gguf",
-    "model": "<T>/models/IQ3_XXS/Qwen3.8-Flash-Next-GSQ-RCO-IQ3_XXS-00001-of-00002.gguf",
-    "gpu": true,
-    "max_tokens": 1024
-   }
-  }
- },
- "128GB-1x24GB qwen IQ3_S": {
-  "code": 0,
-  "config": {
-   "exe": "<T>/engine/<EXE>",
    "args": [
     "--pack",
     "<T>/data/packs/iq3_s",
@@ -2357,8 +1516,6 @@
     "--kv-resident",
     "32768",
     "--vision",
-    "--vram-reserve-mib",
-    "700",
     "--control-vector-scaled",
     "<REPO>/data/uncensor/qwen-nvfp4-gptq-uncensored.gguf:1.0",
     "--control-vector-layer-range",
@@ -2370,29 +1527,30 @@
     "per-layer"
    ],
    "cwd": "<T>",
-   "tokenizer": "<T>/data/packs/iq3_s/tokenizer",
-   "model_name": "qwen3.8-flash-next-iq3_s",
-   "log": "<T>/strata-iq3_s.log",
+   "exe": "<T>/engine/<EXE>",
+   "gpu": 0,
+   "gpus_asked": true,
    "lib_dirs": [
     "<cuda>"
    ],
+   "log": "<T>/strata-iq3_s.log",
+   "model_name": "qwen3.8-flash-next-iq3_s",
    "port": 8080,
+   "tokenizer": "<T>/data/packs/iq3_s/tokenizer",
    "uncensored": false,
-   "gpu": 0,
-   "gpus_asked": true,
    "vision": {
     "exe": "<T>/engine/<VEXE>",
+    "gpu": false,
+    "max_tokens": 300,
     "mmproj": "<T>/models/mmproj-Qwen3.8-Flash-Next-BF16.gguf",
     "model": "<T>/models/IQ3_S/Qwen3.8-Flash-Next-GSQ-RCO-IQ3_S-00001-of-00002.gguf",
-    "gpu": true,
-    "max_tokens": 1024
+    "threads": 6
    }
   }
  },
- "128GB-1x24GB unsloth UD-Q4_K_XL": {
+ "96GB-1x16GB unsloth UD-Q4_K_XL": {
   "code": 0,
   "config": {
-   "exe": "<T>/engine/<EXE>",
    "args": [
     "--pack",
     "<T>/data/packs/unsloth-ud-q4_k_xl",
@@ -2417,8 +1575,6 @@
     "--kv-resident",
     "32768",
     "--vision",
-    "--vram-reserve-mib",
-    "700",
     "--control-vector-scaled",
     "<REPO>/data/uncensor/qwen-nvfp4-gptq-uncensored.gguf:1.0",
     "--control-vector-layer-range",
@@ -2430,26 +1586,27 @@
     "per-layer"
    ],
    "cwd": "<T>",
-   "tokenizer": "<T>/data/packs/unsloth-ud-q4_k_xl/tokenizer",
-   "model_name": "qwen3.8-flash-next-unsloth-ud-q4_k_xl",
-   "log": "<T>/strata-unsloth-ud-q4_k_xl.log",
+   "env": {
+    "STRATA_ROUTE_TAIL_SKIP": "0"
+   },
+   "exe": "<T>/engine/<EXE>",
+   "gpu": 0,
+   "gpus_asked": true,
    "lib_dirs": [
     "<cuda>"
    ],
+   "log": "<T>/strata-unsloth-ud-q4_k_xl.log",
+   "model_name": "qwen3.8-flash-next-unsloth-ud-q4_k_xl",
    "port": 8080,
-   "env": {
-    "STRATA_HC_Q8": "1",
-    "STRATA_ROUTE_TAIL_SKIP": "0"
-   },
+   "tokenizer": "<T>/data/packs/unsloth-ud-q4_k_xl/tokenizer",
    "uncensored": false,
-   "gpu": 0,
-   "gpus_asked": true,
    "vision": {
     "exe": "<T>/engine/<VEXE>",
+    "gpu": false,
+    "max_tokens": 300,
     "mmproj": "<T>/models/mmproj-Qwen3.8-Flash-Next-BF16.gguf",
     "model": "<T>/models/unsloth-UD-Q4_K_XL/Qwen3.8-Flash-Next-UD-Q4_K_XL-00001-of-00004.gguf",
-    "gpu": true,
-    "max_tokens": 1024
+    "threads": 6
    }
   }
  }

@@ -61,6 +61,24 @@ files by hand.
 
 ## What's new
 
+- **0.2.13-nvfp4.4: upstream 0.2.13 (engine 0.1.59).** The fork now sits on upstream 0.2.13: its
+  engine, server and setup merged in, every NVFP4 model, switch and kernel carried over, and the
+  test suites green on the port apart from this machine's environmental family. What 0.2.13 brings
+  that the fork keeps: the DFlash2 drafter's windows and confidence tuned per card, and the app
+  fetching a tuned DFlash2 drafter by itself; the Strix Halo Windows Terminal fix (the engine drops
+  its 2,560 MiB Windows memory floor on integrated graphics, and the Terminal reserves 700 MB -
+  slots 22,991 instead of 17,556); the Linux expert store that 0.2.12 had stopped loading, loading
+  again (#5327, PR #5531) - and its RAM-fallback notice now also on stdout in `--serve` mode, so a
+  llama-swap-style setup sees the 2.4x decode loss this fallback costs; deterministic bf16 products
+  on Intel Arc (`STRATA_SYCL_BF16_DET=0` to revert); Qwen4 groundwork (the `strata-q4-<shape>`
+  shape engine, `strata --geometry` printing `flash_next`, a signed feed that can carry a model
+  list); one fit label in the app and the Terminal ("fits" / "may run slower"); eight dead opt-in
+  switches removed; and `docs/SETTINGS.md` listing every setting. The build split by backend into
+  `cmake/backends/`, with ggml vendored in `third_party/strata-ggml` - no llama.cpp download any
+  more; the fork's cmake additions and its uncensor / rope-auto / MTP settings ride the new
+  `strata_control/setup_config.py` seam. This release ships the source (the attached zip; branch
+  `strata-nvfp4.4`); the engine builds from it with `setup.py --build` (or
+  `release/make_windows_bundle.py` for the portable Windows bundle).
 - **0.2.12-nvfp4.4: upstream 0.2.12 (engine 0.1.58).** The fork now sits on upstream 0.2.12: its
   engine, server and setup merged in, every NVFP4 model, switch and kernel carried over, and the
   test suites green on the port apart from this machine's environmental family. What 0.2.12 brings
@@ -506,6 +524,8 @@ low-RAM mode forced on it. A 64 GB PC runs the low-RAM mode with a smaller RAM b
 fewer experts: [A 96 GB PC](docs/NVFP4.md#a-96-gb-pc-2026-10-09-release-0141-nvfp42),
 [64 GB of RAM](docs/NVFP4.md#64-gb-of-ram-2026-09-30) and
 [Other GPUs](docs/NVFP4.md#other-gpus-rtx-20-30-and-40-2026-09-30) have those runs.
+
+<a id="how-does-it-work"></a>
 
 ## What this fork adds
 

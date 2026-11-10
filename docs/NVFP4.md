@@ -173,6 +173,14 @@ Decode A/B, 300 tokens, 262K context (median of 2): pipelined per-layer registra
 registration 103.2; ggml-cpu's NVFP4 rows 105.3 (the pool is DRAM-bound, so the kernel above moves its time by
 2-3% and the decode rate not at all).
 
+## NVIDIA's FP4-Local checkpoint
+
+Upstream's setup installs NVIDIA's Qwen3.8-Flash-Next-FP4-Local (NVFP4-QAD: a 102 GB checkpoint repacked into a
+Strata pack on the PC). This fork does not - its setup refuses that model with a message and installs only its own
+NVFP4 families (`qwen-nvfp4-gptq`, `qwen-nvidia-nvfp4`, the mix and Q8_0 packs), as it has since 0.1.44.
+
+<a id="history--older-measurements"></a>
+
 ## Tuning measured on this machine (after the fixes above)
 
 Kept:

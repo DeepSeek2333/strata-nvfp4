@@ -34,6 +34,12 @@ Install a graphics driver that supports the package you choose. CUDA 13 packages
 older NVIDIA cards use CUDA 12. AMD and Intel requirements are in their guides. Packaged GPU runtimes do not replace
 hardware drivers. Models and updates need an internet connection to download.
 
+## Older CPUs (experimental)
+
+A PC whose CPU is AVX or SSE4.2 only (no AVX2 + FMA + F16C) gets no prebuilt engine: setup compiles upstream's
+experimental older-CPU build on that PC. It runs, but slowly; building engines by hand is what
+[Build or run from a source checkout](SOURCE_INSTALL.md) covers.
+
 ## The app
 
 1. Open the [latest release](https://github.com/Niko1221/Strata/releases/latest).

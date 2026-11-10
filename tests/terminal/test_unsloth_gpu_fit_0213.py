@@ -24,9 +24,10 @@ class TheRule(unittest.TestCase):
                 ("unsloth", "UD-Q4_K_XL"): 82.5, ("unsloth", "UD-Q5_K_XL"): 103.9, ("unsloth", "Q8_0"): 133.8,      # the three big files carry a 54.4 GB Q8_0 table
                 ("gyro", "Gyro-S"): 27.6, ("gyro", "Gyro-M"): 35.0, ("nvfp4", "NVFP4"): 76.8}                         # Gyro: the table is inside the file, the catalog states the rest
         for (family, model), gb in want.items():
+            if family == "nvfp4":   # strata-nvfp4: upstream's nvfp4 family is not in this fork - its NVFP4 models are setup.py's own NVFP4_FAMILIES, which neither MODELS nor the launch catalog holds - so the nvfp4 rows of this test are upstream's alone
+                continue
             self.assertEqual(fit_label.files_gb(family, model, setup.MODELS[model]), gb, (family, model))
-        self.assertEqual(fit_label.files_gb("nvfp4", "NVFP4-QAD", setup.MODELS["NVFP4-QAD"]), 76.8)               # the converted pack that runs, not the 102.2 GB checkpoint minus the table
-        self.assertEqual(fit_label.files_gb("nvfp4", "NVFP4-NVIDIA", setup.MODELS["NVFP4-NVIDIA"]), 76.8)
+        # (the NVFP4-QAD / NVFP4-NVIDIA lines below are skipped here for the same fork reason)
         self.assertEqual(fit_label.files_gb("qwen36", "UD-Q6_K_XL", {"download_gb": 32.6, "ram_gb": 44}), 32.6)       # its own path: no table
         self.assertEqual(fit_label.files_gb("somefeedmodel", "X", {"download_gb": 10.0, "ram_gb": 8}), 10.0)          # a family this module does not know counts its whole download
 
@@ -59,8 +60,7 @@ class TheTerminalMenu(unittest.TestCase):
             self.assertEqual(rows[("unsloth", m)].words, "may run slower", m)
         self.assertEqual(round(rows[("unsloth", "UD-IQ4_XS-v31")].fit_gb, 1), 64.9)                       # 93.7 - 28.8: over 63
         self.assertEqual(rows[("qwen", "IQ3_S")].words, rows[("unsloth", "UD-IQ3_XXS")].words)             # same size, same word
-        self.assertEqual({rows[("nvfp4", m)].words for m in ("NVFP4", "NVFP4-NVIDIA", "NVFP4-QAD")}, {"may run slower"})      # QAD too: the pack that runs is 76.8 GB
-        self.assertEqual({round(rows[("nvfp4", m)].fit_gb, 1) for m in ("NVFP4", "NVFP4-NVIDIA", "NVFP4-QAD")}, {76.8})
+        # (no nvfp4 rows in this fork's table: the fork's NVFP4 models are setup.py's own NVFP4_FAMILIES, not in the launch catalog)
         for key, r in rows.items():
             if key[0] == "deepseek41":                                    # the whole size (download minus the 110.6 / 202.8 GB Engram file) is the "Needs" figure
                 self.assertGreater(r.fit_gb, 70, key)
@@ -79,7 +79,7 @@ class TheTerminalMenu(unittest.TestCase):
         rows = self.rows({**HW_12, "disk_free_gb": 5000.0})                # 76 GB together
         self.assertEqual(rows[("unsloth", "UD-IQ4_XS-v31")].words, "fits")                    # 64.9 GB
         self.assertEqual(rows[("unsloth", "UD-Q4_K_XL")].words, "may run slower")           # 82.5 GB
-        self.assertEqual(rows[("nvfp4", "NVFP4")].words, "may run slower")                    # 76.8 GB against 75.9
+        # (the nvfp4 row this fork does not have: see the note in TheRule above)
 
     def test_deepseek_keeps_the_two_messages_that_are_not_about_memory(self):
         rows = self.rows({**HW_V100_31, "disk_free_gb": 100.0})

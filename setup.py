@@ -11191,6 +11191,12 @@ def mac_dsv41_setup(a) -> int:
     return install_dsv41(a, a.family, gpu, False, False, 0, False, a.port or 8080, ram, None, [gpu])
 
 
+def ready_paths(model: str, models_dir: Path) -> dict:
+    # strata-nvfp4: the fork installs its NVFP4 models through nvfp4_install, so no family reaches the run-config
+    # build with ready=True; strata_control/setup_config.py unpacks this name and uses it only in that dead branch.
+    raise NotImplementedError("strata-nvfp4: no ready-made family reaches the run-config build")
+
+
 def main() -> int:
     try:                                               # files made by a run as administrator still belong to the user
         from strata_control import private_files as _pf
@@ -11836,6 +11842,7 @@ def main() -> int:
         gpu = {**gpu, "cards": chosen}
         return install_dsv41(a, family, gpu, hip, amd, cuda_tk, multi, port, ram, adopted, all_cards)
     fam = FAMILIES[family]
+    ready = bool(fam.get("ready"))                     # NVFP4: ready-made packs (NVFP4_REPOS), no GGUF shards; the fork's own NVFP4 path returns through nvfp4_install, so every family reaching here is not ready
     SHAPE_ENGINE.clear()
     if fam.get("shape"):                               # a feed model of its own shape: its own engine component (strata_control/shape_engine.py)
         SHAPE_ENGINE["shape"], SHAPE_ENGINE["title"] = fam["shape"], fam.get("title")
